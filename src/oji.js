@@ -1,4 +1,5 @@
-/**
+/**------------------------------------
+ * ------------------------------------
  * oji.js
  * @version 1.0.0
  * @description 
@@ -7,20 +8,32 @@
  * Use this to Debug Elements or Style them 
  * upon relative or absolute values in relation
  * to the viewport or the document
+ * ------------------------------------
+ * ------------------------------------
  */
-(function () {
 
+(function () {
+    /**------------------------------------
+     * ------------------------------------
+     * oji Config Const to fetch data from
+     * ------------------------------------
+     ------------------------------------*/
     const config = {
+        info: {
+            name: 'oji.js',
+            version: '0.1',
+        },
         slug: {
             short: 'oji',
-            long: 'object-info'
+            long: 'oji',
         }
     };
 
-
-    /**
-     * Color Contrast
-     */
+    /**------------------------------------
+     * ------------------------------------
+     * Get Color Contrast Ratio Functions
+     * ------------------------------------
+     ------------------------------------*/
     function getLuminance(rgb) {
         let a = [rgb.r, rgb.g, rgb.b].map(function (v) {
             v /= 255;
@@ -45,6 +58,12 @@
         document.body.removeChild(div);
         return m ? { r: m[1], g: m[2], b: m[3] } : null;
     }
+
+    /**------------------------------------
+     * ------------------------------------
+     * Make Objects HTML and Pretittiefied Text Strings
+     * ------------------------------------
+    ------------------------------------ */
     /**
      * Transform an JSON Object into a HTML Attribute friendly Syntax to render in the DOM Element
      * @param {*} json 
@@ -94,38 +113,26 @@
         return htmlString;
     }
 
-    /**
+    /**------------------------------------
+     * ------------------------------------
      * randomId
-     * @description A random number used to identify the elements with the data-object-info-debug attribute.
-     */
+     * @description A random number used to identify 
+     * the elements with the data-oji-debug attribute.
+     * ------------------------------------
+     ------------------------------------*/
     randomId = Math.floor(Math.random() * 9999);
 
-    /**
-     * calculateObjectInfo
-     * @description Calculates the object info and adds the data attributes to the elements.
-     * @returns {void}
-     */
-    function calculateObjectInfo() {
-
-        /**
-         * elements
-         * @description An array of all elements with the data-object-info attribute.
-         */
-        var elements = document.querySelectorAll('[data-object-info], [data-oji]');
-
-        /**
-         * style
-         * @description A style tag that contains the CSS for the data-object-info-debug attribute.
-         */
-        style = document.createElement('style');
-
-        /**
-         * style
-         * @description A style tag that contains the CSS for the data-object-info-debug attribute.
-         */
-        style.textContent = `
+    /**------------------------------------
+     * ------------------------------------
+     * style
+     * @description A style tag that contains the CSS 
+     * for the data-oji-debug attribute.
+     * ------------------------------------
+     ------------------------------------*/
+    style = document.createElement('style');
+    style.textContent = `
         :root {
-            --oji-max-width: min(300px, 100%);
+            --oji-max-width: min(320px, 100%);
         }
 
         :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]):where([data-${config.slug.short}-id],[data-${config.slug.long}-id])  {
@@ -135,7 +142,7 @@
             outline-offset: -1.5px;
             box-shadow: 0 0 1rem rgba(0,0,0,0.33);
         }
-       
+
         :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]) :where(.${config.slug.short}-debug-container, .${config.slug.long}-debug-container) {
             opacity: 0.66;
             position: absolute;
@@ -157,8 +164,8 @@
             font-family: monospace;
             z-index: 9999;
             text-shadow: 0 0 1px rgba(0,0,0, 0.33);       
-            overflow:scroll   ;
-            min-height: calc(var(--oji-max-width) / 2)
+            overflow:scroll;
+            min-height: calc(var(--oji-max-width) / 1.5)
         }
         :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]) :where(.object-${config.slug.short}-container, .object-${config.slug.long}-container):hover {
             opacity: 1;
@@ -173,28 +180,52 @@
                 color: #fff;
             }
         }`;
-        document.head.appendChild(style);
+    document.head.appendChild(style);
+
+    /**------------------------------------
+     * ------------------------------------
+     * calculateObjectInfo
+     * @description Calculates the object info and adds the data attributes to the elements.
+     * @returns {void}
+     * ------------------------------------
+     ------------------------------------*/
+    function calculateObjectInfo() {
 
         /**
-         * @description Loops through all elements with the data-object-info attribute and calculates the object info.
+         * elements
+         * @description An array of all elements with the data-oji attribute.
+         */
+        var elements = document.querySelectorAll(`[data-${config.slug.long}], [data-${config.slug.short}]`);
+
+        /**
+         * @description Loops through all elements with the data-oji attribute and calculates the object info.
          */
         for (var i = 0; i < elements.length; i++) {
-            /**
+            /**------------------------------------
              * el
              * @description The current element in the loop.
-             */
+             ------------------------------------*/
             let el = elements[i];
 
-            /**
+            /**------------------------------------
              * Conditional checks for attributes 
              * - oji-attributes
              * - oji-debug
              * - oji-styles
-             */
+             ------------------------------------*/
+
             let checkAttributes = el.hasAttribute(`data-${config.slug.long}-attributes`) || el.hasAttribute(`data-${config.slug.short}-attributes`)
             let checkDebug = el.hasAttribute(`data-${config.slug.long}-debug`) || el.hasAttribute(`data-${config.slug.short}-debug`)
-            let checkStyle = el.hasAttribute(`data-${config.slug.long}-styles`) || el.hasAttribute(`data-${config.slug.short}-styles`)
+            let checkStyleAttributes = el.hasAttribute(`data-${config.slug.long}-style-attributes`) || el.hasAttribute(`data-${config.slug.short}-style-attributes`)
+            let checkOjiSummary = el.getAttribute(`data-${config.slug.long}-summary`) || el.getAttribute(`data-${config.slug.short}-summary`)
 
+            /**------------------------------------
+             * ------------------------------------
+             * This part of the Software Calculates and fetches
+             * the actual values thar are displayed as attributes 
+             * and elements (debug)
+             * ------------------------------------
+            ------------------------------------ */
             /**
              * Scroll Position
              */
@@ -310,11 +341,12 @@
             let rgbBackgroundColor = parseColor(backgroundColor);
             let colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
 
-
-            /**
+            /**------------------------------------
+             * ------------------------------------
              * store all the calculated Values in a global objet to call
              * from there in the UI
-             */
+             * ------------------------------------
+             ------------------------------------*/
             let oji = {
                 info: {
                     id: randomId + '-' + i,
@@ -364,27 +396,33 @@
                     absoluteSpacingLeft: `${spacingLeftDocPx}px`,
                 }
             };
-            console.log(oji);
             transformedObject = transformJsonToHTMLString(oji);
-
             const object = oji.object;
             const viewport = oji.viewport;
             const doc = oji.document;
-            /**
-             * @description Adds the data attributes to the current element in the loop
-             * if the attribute [data-object-info-attributes] is set
-             */
-            if (checkStyle) {
-                el.setAttribute(`data-${config.slug.short}-object-style-font-size-px`, object.fontSizePx);
-                el.setAttribute(`data-${config.slug.short}-object-style-font-size-rem`, object.fontSizeRem);
-                el.setAttribute(`data-${config.slug.short}-object-style-font-size-vw`, object.fontSizeVw);
-                el.setAttribute(`data-${config.slug.short}-object-style-color`, object.color);
-                el.setAttribute(`data-${config.slug.short}-object-style-color-contrast`, object.colorContrast);
-                el.setAttribute(`data-${config.slug.short}-object-style-background-color`, object.backgroundColor);
+            /**------------------------------------
+             * ------------------------------------
+             * @description Adds the data attributes to the 
+             * current element in the loop if the attribute 
+             * [data-oji-styles] is set
+             * ------------------------------------
+             ------------------------------------*/
+            if (checkStyleAttributes) {
+                el.setAttribute(`data-${config.slug.short}-style-font-size-px`, object.fontSizePx);
+                el.setAttribute(`data-${config.slug.short}-style-font-size-rem`, object.fontSizeRem);
+                el.setAttribute(`data-${config.slug.short}-style-font-size-vw`, object.fontSizeVw);
+                el.setAttribute(`data-${config.slug.short}-style-color`, object.color);
+                el.setAttribute(`data-${config.slug.short}-style-color-contrast`, object.colorContrast);
+                el.setAttribute(`data-${config.slug.short}-style-background-color`, object.backgroundColor);
             }
-
+            /**------------------------------------
+             * ------------------------------------
+             * @description Adds the data attributes to the 
+             * current element in the loop if the attribute 
+             * [data-oji-attributes] is set
+             * ------------------------------------
+             ------------------------------------*/
             if (checkAttributes) {
-
                 el.setAttribute(`data-${config.slug.short}-absolute-width`, object.absoluteWidth);
                 el.setAttribute(`data-${config.slug.short}-absolute-height`, object.absoluteHeight);
                 el.setAttribute(`data-${config.slug.short}-aspect-ratio`, '1/' + object.aspectRatio);
@@ -419,30 +457,37 @@
                 el.setAttribute(`data-${config.slug.short}-doc-absolute-to-bottom`, doc.absoluteSpacingBottom);
                 el.setAttribute(`data-${config.slug.short}-doc-absolute-to-left`, doc.absoluteSpacingLeft);
             }
-
-            /**
-             * @description Adds the data-object-info attribute to the current element in the loop.
+            /**------------------------------------
+             * ------------------------------------
+             * @description Adds the data-oji attribute to the current element in the loop.
              * get this data from the trabsfoned JSON, not the the Old Approch with the string
-             */
-            el.setAttribute(`data-${config.slug.short}-summary`, transformedObject);
-            /**
-             * @description Adds the data-object-info-id attribute to the current element in the loop.
-             */
+             * ------------------------------------
+             * ------------------------------------*/
+            if (checkOjiSummary != 'false' && checkOjiSummary != false) {
+                el.setAttribute(`data-${config.slug.short}-summary`, transformedObject);
+            }
+
+            /**------------------------------------
+             * ------------------------------------
+             * @description Check if data-oji-debug ist and 
+             * add the data-oji-id attribute to the current element in the loop.
+             * ------------------------------------
+             ------------------------------------*/
             if (checkDebug) {
 
                 var existingDebugBox = el.querySelector(`.${config.slug.short}-debug-container`);
 
-                /**
-                 * randomNumberR
+                /**------------------------------------
+                 * red, green, blue
                  * @description A random number between 0 and 255 to create a unique Color Outline for each debugged Box
-                 */
-                const randomNumberR = Math.floor(Math.random() * 256), randomNumberG = Math.floor(Math.random() * 256), randomNumberB = Math.floor(Math.random() * 256);
-                // Create a new div element for the debug box
-
+                 ------------------------------------*/
+                const red = Math.floor(Math.random() * 256), green = Math.floor(Math.random() * 256), blue = Math.floor(Math.random() * 256);
                 let debugBox = document.createElement('div');
                 debugBox.setAttribute('class', `${config.slug.short}-debug-container`);
-                el.style.outlineColor = `rgba(${randomNumberR}, ${randomNumberG}, ${randomNumberB}, 0.33)`;
-                // Check if the debug box already exists
+                el.style.outlineColor = `rgba(${red}, ${green}, ${blue}, 0.33)`;
+                /** ------------------------------------
+                 * Check if the debug box already exists  
+                 ------------------------------------*/
                 if (!existingDebugBox) {
                     // If it doesn't exist, create a new debug box
                     debugBox = document.createElement('div');
@@ -454,62 +499,47 @@
                     debugBox = existingDebugBox;
                 }
 
-                // Set the content of the debug box
                 debugBox.innerHTML = `<code>${prettifyObjectForHTML(oji)}</code>`;
-
-                // Append the debug box to the current element
-                el.style.position = 'relative'; // Ensure the parent is positioned
+                el.style.position = 'relative';
                 el.appendChild(debugBox);
-
-                // Set the unique data-object-info-id
                 el.setAttribute(`data-${config.slug.short}-id`, `${randomId}-${i}`);
-
-                /**
-                 * 1. Create a div inside the .object-info-debug-container
-                 * 2. give an onclick event listener that copies the JSON
-                 * Object to the clipboard
-                 */
 
             }
         }
     }
-    /**
-     * debounce
+    /**------------------------------------
+     * ------------------------------------
+     * @name debounce
      * @description A function that delays the execution of the input function until after a specified wait time has elapsed since the last time it was invoked.
      * @param {Function} func - The function to debounce.
      * @param {number} wait - The number of milliseconds to delay.
      * @returns {Function}
-     */
+     * ------------------------------------
+     ------------------------------------*/
     function debounce(func, wait) {
         let timeout;
-
-        // This is the function that is returned and will be called many times
         return function executedFunction() {
-            // The context and args are the scope (this) and parameters for the function
             let context = this;
             let args = arguments;
-
-            // The function to be called after the debounce time has elapsed
             let later = function () {
-                // null the timeout to indicate the debounce ended
                 timeout = null;
-                // Execute the function
                 func.apply(context, args);
             };
-
-            // This will reset the waiting every function execution. This is the reason for the debounce behavior.
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
     };
-
-    // Debounced version of calculateObjectInfo with a 250ms wait time
     var debouncedCalculateObjectInfo = debounce(calculateObjectInfo, 200);
 
-    // Call the debounced function instead of calculateObjectInfo directly on events
+    /**------------------------------------
+     * ------------------------------------
+     * Event Listeners for the calculateObjectInfo 
+     * Function (debounced)
+     * ------------------------------------
+     ------------------------------------*/
     window.addEventListener('load', debouncedCalculateObjectInfo);
     window.addEventListener('resize', debouncedCalculateObjectInfo);
     window.addEventListener('scroll', debouncedCalculateObjectInfo);
-
+    window.addEventListener('change', debouncedCalculateObjectInfo);
 
 })();

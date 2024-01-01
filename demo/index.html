@@ -39,6 +39,11 @@
             background-color: beige;
         }
 
+        :where(.object-info-element:nth-child(odd)) {
+            background-color: aquamarine;
+            color: rgb(0, 255, 208);
+        }
+
         .height-100vh {
             height: 100vh;
         }
@@ -70,14 +75,35 @@
         .font-size-big {
             font-size: 3rem;
         }
-        .object-info-element:nth-child(odd) {
-            background-color: aquamarine;
-            color: blue;
-        }
 
         .clamped-font {
             font-size: clamp(13px, 2vw, 24px);
         }
+
+        .bg-black {
+            background-color: black;
+        }
+
+        .bg-white {
+            background-color: white;
+        }
+
+        .text-black {
+            color: black;
+        }
+
+        .text-grey {
+            color: rgba(128, 128, 128, 1);
+        }
+
+        .text-white {
+            color: white;
+        }
+
+        .serif {
+            font-family: 'Times New Roman', Times, serif;
+        }
+
     </style>
 </head>
 
@@ -85,19 +111,23 @@
     <section>
         <h1>Object Info Demo</h1>
         <div class="object-info">
-            <section data-oji data-oji-attributes data-oji-debug
-                class="object-info-element height-100vh width-100">
+            <section data-oji-summary="false" data-oji data-oji-summary="false" data-oji-attributes data-oji-debug
+                class="serif object-info-element height-100vh width-100">
 
             </section>
-            <section data-oji-styles data-oji data-oji-attributes data-oji-debug
+            <section data-oji data-oji-style-attributes
                 class=" object-info-element height-16rem width-33 clamped-font">
             </section>
-            <section data-oji data-oji-attributes data-oji-debug
-                class="object-info-element height-100vh width-50 font-size-big">
+            <section data-oji data-oji-debug class="bg-black text-grey object-info-element height-100vh width-50 font-size-big">
             </section>
         </div>
     </section>
-    <script src="../src/object-info.js"></script>
+    <style>
+        /* :root {
+            --oji-max-width: 400px;
+        } */
+    </style>
+    <script src="../src/oji.js"></script>
 </body>
 
 </html>

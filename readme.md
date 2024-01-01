@@ -2,49 +2,51 @@
 
 ## Overview
 
-This JavaScript snippet is designed to be a tool for developers and designers who need to obtain detailed information about HTML elements on their web page. It provides a convenient way to visualize and understand various metrics related to the size, position, and relative spacing of elements. This tool is especially useful during the debugging and layout adjustment phases of web development.
+oji.js is a JavaScript snippet that equips developers and designers with detailed data attributes about HTML elements' size, position, and relative metrics to the viewport and document. It's a tool during the debugging and layout phases, offering insights into element metrics, which are crucial for creating responsive and well-structured web pages.
 
 ## Features
 
-- Metrics: Calculates and displays a wide array of metrics including absolute dimensions, aspect ratios, relative viewport and document positions, and spacings.
-- Updates: Listens to page load, resize, and scroll events to update the metrics in real-time.
-- Debug Visualization: Offers a visual overlay on elements with debug information to aid in quick assessment and adjustments.
+- Dynamic Metrics: Computes and attaches detailed metrics to elements, such as absolute dimensions, aspect ratios, and relative positions to the viewport and document.
+- Real-time Updates: Responds to page load, resize, and scroll events, ensuring the metrics are always up-to-date.
+- Enhanced Debugging: Introduces a debug visualization layer on specified elements, displaying a comprehensive set of metrics for quick analysis and adjustments.
+
 
 ## How It Works
 
 1. **Initialization:** 
-   1. Generates a random session ID to uniquely tag elements during that session.
-   2. Attaches event listeners to the window to trigger information calculation on load, resize, and scroll.
-2. **Calculating Object Information:** 
-   1. Iterates over all elements with the attribute data-object-info.
-   2. Computes various metrics such as element dimensions, aspect ratio, relative positions, and spacings.
-   3. Updates elements with calculated information, which can be used for debugging or other purposes.
-3. **Styling and Debugging:**
-   1. Applies a set of styles to elements marked for debugging (`data-object-info-debug`). These styles make it easy to visually identify the dimensions and spacing of elements.
-   2. Provides a detailed after-element content display showing all the calculated metrics for easy on-page reference.
+   1. Generates a unique session ID for tagging elements.
+   2. Sets up event listeners on the window for load, resize, and scroll events to trigger metric computation.
+2. **Metric Computation:** 
+   1.Targets elements marked with `data-oji` or `data-object-info`.
+   2. Calculates various metrics, including dimensions, aspect ratios, and relative positions.
+   3. Updates elements with these metrics, which are then accessible for debugging or other applications.
+3. **Visualization and Debugging:**
+   1.Applies distinct styles to elements flagged for debugging (`data-oji-debug`), highlighting their dimensions and positions.
+   2. Provides an on-page overlay detailing all computed metrics for each element, facilitating an easier understanding and quicker layout adjustments.
 
 ## Installation
 
-1. Copy the entire script.
-2. Paste it into your project's main JavaScript file or include it as a separate script in your HTML via  
+1. Copy the entire script from `oji.js`.
+2. Include it in your project by embedding it directly in your HTML or linking it as a separate file:
    ```html
    <script src="path/to/object-info.js" defer></script>
    ```
-3. Make sure the script is laoded after the DOM is loaded, use `defer` if you out the `<head>` of your document
+3. Ensure the script loads after the DOM is fully loaded, ideally using the defer attribute if placing it in the <head> section.
 
 ## Usage
-1. **To enable the tool on an element:**
-   - Add the attribute `data-oji` to any HTML element you want to inspect. This will set a single HTML Attribute which gives you a summary of the elements position and size in relation to the viewport and document itself.
-2. **To view debugging visuals:**
-   - Add the attribute `data-oji-debug` to the same element. This will activate the visual overlay with detailed metrics.
-3. **To Animate or Style Elements**
-   - Add the `data-oji-attributes` to the element and Object Info will set all values as HTML Attributes whioch can be used by some other JS as anchor attributes and behave a certain way
+1. **Activating the Tool:**
+   - Assign the `data-oji` attribute to any HTML element you wish to analyze. This activates the data attributes, providing a summary of the element's metrics related to its position and size.
+2. **Enabling Debug Visuals:**
+   - Use the `data-oji-debug` attribute on the desired elements to initiate a visual overlay, displaying an extensive set of metrics for in-depth analysis.
+3. **Animating and Styling:**
+   - Apply the `data-oji-attributes` to elements, and `oji.js` will assign computed metrics as HTML attributes. These can serve as hooks for further scripting or styling, allowing you to create responsive behaviors based on the element's metrics.
 
 ## Notes for Users
 
-- Understanding Code: A basic understanding of HTML and JavaScript is sufficient to implement and utilize this tool effectively.
-- Customization: The tool is designed to be customizable. You can modify the styles and the information displayed as per your needs.
-- Performance: Keep in mind that adding debug information to a large number of elements can impact the performance of your page. Use it judiciously, especially on production sites.
+- Code Understanding: A foundational knowledge of HTML and JavaScript is recommended for implementing and leveraging this tool effectively.
+- Customization: Feel free to tailor the styles and displayed information to fit your specific needs.
+- Performance Considerations: Attaching debug information to numerous elements might affect page performance. Use this feature wisely, particularly on live websites.
+- 
 - Troubleshooting
-  - Not Working: Ensure the script is loaded correctly and the attributes are properly set on the elements.
-  - Incorrect Information: Check for any errors in the console and ensure your page's CSS and JavaScript are not conflicting with the tool's operation.
+  - Not Working: Confirm that the script is correctly loaded and that elements have the appropriate attributes set.
+  - Inaccurate Metrics: Inspect the console for errors and check that your page's CSS and JavaScript aren't interfering with oji.js's functionality.
