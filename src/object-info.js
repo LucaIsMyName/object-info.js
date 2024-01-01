@@ -9,11 +9,20 @@
  * to the viewport or the document
  */
 (function () {
+
+    const config = {
+        slug: {
+            short: 'oji',
+            long: 'object-info'
+        }
+    };
+
+
     /**
      * Color Contrast
      */
     function getLuminance(rgb) {
-        var a = [rgb.r, rgb.g, rgb.b].map(function (v) {
+        let a = [rgb.r, rgb.g, rgb.b].map(function (v) {
             v /= 255;
             return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
         });
@@ -21,18 +30,18 @@
     }
 
     function getContrastRatio(color1, color2) {
-        var luminance1 = getLuminance(color1);
-        var luminance2 = getLuminance(color2);
-        var brightest = Math.max(luminance1, luminance2);
-        var darkest = Math.min(luminance1, luminance2);
+        let luminance1 = getLuminance(color1);
+        let luminance2 = getLuminance(color2);
+        let brightest = Math.max(luminance1, luminance2);
+        let darkest = Math.min(luminance1, luminance2);
         return (brightest + 0.05) / (darkest + 0.05);
     }
 
     function parseColor(inputColor) {
-        var div = document.createElement('div');
+        let div = document.createElement('div');
         div.style.color = inputColor;
         document.body.appendChild(div);
-        var m = getComputedStyle(div).color.match(/^rgb\s*\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)$/);
+        let m = getComputedStyle(div).color.match(/^rgb\s*\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)$/);
         document.body.removeChild(div);
         return m ? { r: m[1], g: m[2], b: m[3] } : null;
     }
@@ -118,7 +127,8 @@
         :root {
             --oji-max-width: min(300px, 100%);
         }
-        :is([data-object-info-debug], [data-oji-debug])[data-object-info-id],  {
+
+        :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]):where([data-${config.slug.short}-id],[data-${config.slug.long}-id])  {
             position: relative;
             outline-width: 3px;
             outline-style: solid;
@@ -126,7 +136,7 @@
             box-shadow: 0 0 1rem rgba(0,0,0,0.33);
         }
        
-        :is([data-object-info-debug], [data-oji-debug]) .object-info-debug-container {
+        :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]) :where(.${config.slug.short}-debug-container, .${config.slug.long}-debug-container) {
             opacity: 0.66;
             position: absolute;
             top: 0.5rem;
@@ -150,18 +160,17 @@
             overflow:scroll   ;
             min-height: calc(var(--oji-max-width) / 2)
         }
-        :is([data-object-info-debug], [data-oji-debug]) .object-info-debug-container:hover {
+        :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]) :where(.object-${config.slug.short}-container, .object-${config.slug.long}-container):hover {
             opacity: 1;
         }
         @media (prefers-color-scheme: dark) {
-            :is([data-object-info-debug], [data-oji-debug]) {
+            :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]) {
                 box-shadow: 0 0 1rem rgba(255,255,255,0.33);
 
             }
-            :is([data-object-info-debug], [data-oji-debug]) .object-info-debug-container {
+            :where([data-${config.slug.long}-debug], [data-${config.slug.short}-debug]):where(.object-${config.slug.short}-container, .object-${config.slug.long}-container) {
                 background-color: #000000b3;
                 color: #fff;
-                
             }
         }`;
         document.head.appendChild(style);
@@ -174,121 +183,143 @@
              * el
              * @description The current element in the loop.
              */
-            var el = elements[i];
+            let el = elements[i];
+
+            /**
+             * Conditional checks for attributes 
+             * - oji-attributes
+             * - oji-debug
+             * - oji-styles
+             */
+            let checkAttributes = el.hasAttribute(`data-${config.slug.long}-attributes`) || el.hasAttribute(`data-${config.slug.short}-attributes`)
+            let checkDebug = el.hasAttribute(`data-${config.slug.long}-debug`) || el.hasAttribute(`data-${config.slug.short}-debug`)
+            let checkStyle = el.hasAttribute(`data-${config.slug.long}-styles`) || el.hasAttribute(`data-${config.slug.short}-styles`)
+
             /**
              * Scroll Position
              */
-            var scrollX = window.scrollX;
-            var scrollY = window.scrollY;
+            let scrollX = window.scrollX;
+            let scrollY = window.scrollY;
+
             /**
              * style
              * @description The computed style of the current element in the loop.
              */
-            var style = window.getComputedStyle(el);
+            let style = window.getComputedStyle(el);
 
             /**
              * widthPx & heightPx
              * @description The width and height of the current element in pixels.
              */
-            var widthPx = parseFloat(style.width);
-            var heightPx = parseFloat(style.height);
+            let widthPx = parseFloat(style.width);
+            let heightPx = parseFloat(style.height);
             /**
              * roundedWidth & roundedHeight
              * @description The width of the current element in pixels rounded to the nearest integer.
              */
-            var roundedWidth = Math.round(widthPx);
-            var roundedHeight = Math.round(heightPx);
+            let roundedWidth = Math.round(widthPx);
+            let roundedHeight = Math.round(heightPx);
 
             /**
              * DocWidth & DocHeight
              * @description The width and height of the document in pixels.
              */
-            var DocWidth = document.documentElement.scrollWidth;
-            var DocHeight = document.body.scrollHeight;
+            let DocWidth = document.documentElement.scrollWidth;
+            let DocHeight = document.body.scrollHeight;
 
             /**
             * docWidthRelative & docHeightRelative
             * @description The width of the current element in pixels relative to the document.
             */
-            var docWidthRelative = Math.round((100 / DocWidth * roundedWidth));
-            var docHeightRelative = Math.round((100 / DocHeight * roundedHeight));
+            let docWidthRelative = Math.round((100 / DocWidth * roundedWidth));
+            let docHeightRelative = Math.round((100 / DocHeight * roundedHeight));
 
             /**
              * viewPortWidth & viewPortHeight
              * @description The width and height of the viewport in pixels.
              */
-            var viewPortWidth = window.innerWidth;
-            var viewPortHeight = window.innerHeight;
+            let viewPortWidth = window.innerWidth;
+            let viewPortHeight = window.innerHeight;
 
 
             /**
              * viewPortWidthRelative & viewPortHeightRelative
              * @description The width and height of the current element in pixels relative to the viewport.
              */
-            var viewPortWidthRelative = Math.round((100 / viewPortWidth * widthPx));
-            var viewPortHeightRelative = Math.round((100 / viewPortHeight * heightPx));
+            let viewPortWidthRelative = Math.round((100 / viewPortWidth * widthPx));
+            let viewPortHeightRelative = Math.round((100 / viewPortHeight * heightPx));
 
             /**
              * Get the boundaries of the el
              */
-            var rect = el.getBoundingClientRect();
+            let rect = el.getBoundingClientRect();
+
             /**
              * toViewport
              * @description The distance from the edge of the viewport to the edge of the current element in pixels.
              */
-            var topToViewport = rect.top;
-            var rightToViewport = window.innerWidth - rect.right;
-            var bottomToViewport = window.innerHeight - rect.bottom;
-            var leftToViewport = rect.left;
+            let topToViewport = rect.top;
+            let rightToViewport = window.innerWidth - rect.right;
+            let bottomToViewport = window.innerHeight - rect.bottom;
+            let leftToViewport = rect.left;
+
             /**
              * spacingsToViewport
              * @description The distance from the edge of the viewport to the edge of the current element in pixels rounded to the nearest integer.
              */
-            var spacingLeft = Math.round(leftToViewport);
-            var spacingRight = Math.round(rightToViewport);
-            var spacingTop = Math.round(topToViewport);
-            var spacingBottom = Math.round(bottomToViewport);
+            let spacingLeft = Math.round(leftToViewport);
+            let spacingRight = Math.round(rightToViewport);
+            let spacingTop = Math.round(topToViewport);
+            let spacingBottom = Math.round(bottomToViewport);
+
             /**
              * spacingLeftViewportRelative
              * @description The distance from the edge of the viewport to the edge of the current element in pixels relative to the viewport.
              */
-            var spacingLeftViewportRelative = Math.round((100 / viewPortWidth * spacingLeft));
-            var spacingRightViewportRelative = Math.round((100 / viewPortWidth * spacingRight));
-            var spacingTopViewportRelative = Math.round((100 / viewPortHeight * spacingTop));
-            var spacingBottomViewportRelative = Math.round((100 / viewPortHeight * spacingBottom));
+            let spacingLeftViewportRelative = Math.round((100 / viewPortWidth * spacingLeft));
+            let spacingRightViewportRelative = Math.round((100 / viewPortWidth * spacingRight));
+            let spacingTopViewportRelative = Math.round((100 / viewPortHeight * spacingTop));
+            let spacingBottomViewportRelative = Math.round((100 / viewPortHeight * spacingBottom));
+
             /**
              * spacingLeftDocRelative
              * @description The distance from the left edge of the viewport to the left edge of the current element in pixels relative to the document.
              */
-            var spacingLeftDocRelative = Math.round((100 / DocWidth) * (leftToViewport + scrollX));
-            var spacingRightDocRelative = Math.round(100 - ((leftToViewport + scrollX + widthPx) * 100 / DocWidth));
-            var spacingTopDocRelative = Math.round((100 / DocHeight) * (topToViewport + scrollY));
-            var spacingBottomDocRelative = Math.round(100 - ((topToViewport + scrollY + heightPx) * 100 / DocHeight));
-            var spacingLeftDocPx = Math.round(leftToViewport + scrollX);
-            var spacingRightDocPx = Math.round(DocWidth - (leftToViewport + scrollX + widthPx));
-            var spacingTopDocPx = Math.round(topToViewport + scrollY);
-            var spacingBottomDocPx = Math.round(DocHeight - (topToViewport + scrollY + heightPx));
+            let spacingLeftDocRelative = Math.round((100 / DocWidth) * (leftToViewport + scrollX));
+            let spacingRightDocRelative = Math.round(100 - ((leftToViewport + scrollX + widthPx) * 100 / DocWidth));
+            let spacingTopDocRelative = Math.round((100 / DocHeight) * (topToViewport + scrollY));
+            let spacingBottomDocRelative = Math.round(100 - ((topToViewport + scrollY + heightPx) * 100 / DocHeight));
+            let spacingLeftDocPx = Math.round(leftToViewport + scrollX);
+            let spacingRightDocPx = Math.round(DocWidth - (leftToViewport + scrollX + widthPx));
+            let spacingTopDocPx = Math.round(topToViewport + scrollY);
+            let spacingBottomDocPx = Math.round(DocHeight - (topToViewport + scrollY + heightPx));
 
             /**
              * Styling Parameters
+             * Font Size, Family, Color and BG Colors
              */
-            var elementStyles = window.getComputedStyle(el);
-            var fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
-            var fontSizePx = fontSize;
-            var fontSizeRem = fontSize / 16;
-            var fontSizeVw = parseFloat(100 / viewPortWidth * fontSize).toFixed(2);
-            var fontFamily = `${elementStyles.getPropertyValue('font-family')}`;
-            var color = `${elementStyles.getPropertyValue('color')}`;
-            var backgroundColor = `${elementStyles.getPropertyValue('background-color')}`;
-            var rgbColor = parseColor(color);
-            var rgbBackgroundColor = parseColor(backgroundColor);
-            var colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
+            let elementStyles = window.getComputedStyle(el);
+            let fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
+            let fontSizePx = fontSize;
+            let fontSizeRem = fontSize / 16;
+            let fontSizeVw = parseFloat(100 / viewPortWidth * fontSize).toFixed(2);
+            let fontFamily = `${elementStyles.getPropertyValue('font-family')}`;
+            let color = `${elementStyles.getPropertyValue('color')}`;
+            let backgroundColor = `${elementStyles.getPropertyValue('background-color')}`;
+            let rgbColor = parseColor(color);
+            let rgbBackgroundColor = parseColor(backgroundColor);
+            let colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
+
+
             /**
-             * Store all the calculated Values in a global objet to call
+             * store all the calculated Values in a global objet to call
              * from there in the UI
-             * 
              */
             let oji = {
+                info: {
+                    id: randomId + '-' + i,
+                    attributes: '[data-' + config.slug.long + '], [data-' + config.slug.short + ']'
+                },
                 object: {
                     absoluteWidth: `${roundedWidth}px`,
                     absoluteHeight: `${roundedHeight}px`,
@@ -343,60 +374,63 @@
              * @description Adds the data attributes to the current element in the loop
              * if the attribute [data-object-info-attributes] is set
              */
-            if (el.hasAttribute('data-object-info-styles') || el.hasAttribute('data-oji-styles')) {
-                el.setAttribute('data-oji-object-style-font-size-px', object.fontSizePx);
-                el.setAttribute('data-oji-object-style-font-size-rem', object.fontSizeRem);
-                el.setAttribute('data-oji-object-style-font-size-vw', object.fontSizeVw);
+            if (checkStyle) {
+                el.setAttribute(`data-${config.slug.short}-object-style-font-size-px`, object.fontSizePx);
+                el.setAttribute(`data-${config.slug.short}-object-style-font-size-rem`, object.fontSizeRem);
+                el.setAttribute(`data-${config.slug.short}-object-style-font-size-vw`, object.fontSizeVw);
+                el.setAttribute(`data-${config.slug.short}-object-style-color`, object.color);
+                el.setAttribute(`data-${config.slug.short}-object-style-color-contrast`, object.colorContrast);
+                el.setAttribute(`data-${config.slug.short}-object-style-background-color`, object.backgroundColor);
             }
 
-            if (el.hasAttribute('data-object-info-attributes') || el.hasAttribute('data-oji-attributes')) {
+            if (checkAttributes) {
 
-                el.setAttribute('data-oji-absolute-width', object.absoluteWidth);
-                el.setAttribute('data-oji-absolute-height', object.absoluteHeight);
-                el.setAttribute('data-oji-aspect-ratio', '1/' + object.aspectRatio);
+                el.setAttribute(`data-${config.slug.short}-absolute-width`, object.absoluteWidth);
+                el.setAttribute(`data-${config.slug.short}-absolute-height`, object.absoluteHeight);
+                el.setAttribute(`data-${config.slug.short}-aspect-ratio`, '1/' + object.aspectRatio);
 
                 /** Viewport Related */
-                el.setAttribute('data-oji-viewport-absolute-width', viewport.absoluteViewportWidth);
-                el.setAttribute('data-oji-viewport-absolute-height', viewport.absoluteViewportHeight);
-                el.setAttribute('data-oji-viewport-aspect-ratio', viewport.aspectRatio);
-                el.setAttribute('data-oji-viewport-relative-object-width', viewport.relativeObjectWidth);
-                el.setAttribute('data-oji-viewport-relative-object-height', viewport.relativeObjectHeight);
-                el.setAttribute('data-oji-viewport-relative-to-top', viewport.relativeSpacingTop);
-                el.setAttribute('data-oji-viewport-relative-to-right', viewport.relativeSpacingRight);
-                el.setAttribute('data-oji-viewport-relative-to-bottom', viewport.relativeSpacingBottom);
-                el.setAttribute('data-oji-viewport-relative-to-left', viewport.relativeSpacingBottom);
-                el.setAttribute('data-oji-viewport-absolute-to-top', viewport.absoluteSpacingTop);
-                el.setAttribute('data-oji-viewport-absolute-to-right', viewport.absoluteSpacingRight);
-                el.setAttribute('data-oji-viewport-absolute-to-bottom', viewport.absoluteSpacingBottom);
-                el.setAttribute('data-oji-viewport-absolute-to-left', viewport.absoluteSpacingLeft);
+                el.setAttribute(`data-${config.slug.short}-viewport-absolute-width`, viewport.absoluteViewportWidth);
+                el.setAttribute(`data-${config.slug.short}-viewport-absolute-height`, viewport.absoluteViewportHeight);
+                el.setAttribute(`data-${config.slug.short}-viewport-aspect-ratio`, viewport.aspectRatio);
+                el.setAttribute(`data-${config.slug.short}-viewport-relative-object-width`, viewport.relativeObjectWidth);
+                el.setAttribute(`data-${config.slug.short}-viewport-relative-object-height`, viewport.relativeObjectHeight);
+                el.setAttribute(`data-${config.slug.short}-viewport-relative-to-top`, viewport.relativeSpacingTop);
+                el.setAttribute(`data-${config.slug.short}-viewport-relative-to-right`, viewport.relativeSpacingRight);
+                el.setAttribute(`data-${config.slug.short}-viewport-relative-to-bottom`, viewport.relativeSpacingBottom);
+                el.setAttribute(`data-${config.slug.short}-viewport-relative-to-left`, viewport.relativeSpacingBottom);
+                el.setAttribute(`data-${config.slug.short}-viewport-absolute-to-top`, viewport.absoluteSpacingTop);
+                el.setAttribute(`data-${config.slug.short}-viewport-absolute-to-right`, viewport.absoluteSpacingRight);
+                el.setAttribute(`data-${config.slug.short}-viewport-absolute-to-bottom`, viewport.absoluteSpacingBottom);
+                el.setAttribute(`data-${config.slug.short}-viewport-absolute-to-left`, viewport.absoluteSpacingLeft);
 
                 /** Document Related */
-                el.setAttribute('data-oji-doc-absolute-width', doc.absoluteDocWidth);
-                el.setAttribute('data-oji-doc-absolute-height', doc.absoluteDocHeight);
-                el.setAttribute('data-oji-doc-aspect-ratio', doc.aspectRatio);
-                el.setAttribute('data-oji-doc-relative-object-width', doc.relativeObjectWidth);
-                el.setAttribute('data-oji-doc-relative-object-height', doc.relativeObjectHeight);
-                el.setAttribute('data-oji-doc-relative-to-top', doc.relativeSpacingTop);
-                el.setAttribute('data-oji-doc-relative-to-right', doc.relativeSpacingRight);
-                el.setAttribute('data-oji-doc-relative-to-bottom', doc.relativeSpacingBottom);
-                el.setAttribute('data-oji-doc-relative-to-left', doc.relativeSpacingLeft);
-                el.setAttribute('data-oji-doc-absolute-to-top', doc.absoluteSpacingTop);
-                el.setAttribute('data-oji-doc-absolute-to-right', doc.absoluteSpacingRight);
-                el.setAttribute('data-oji-doc-absolute-to-bottom', doc.absoluteSpacingBottom);
-                el.setAttribute('data-oji-doc-absolute-to-left', doc.absoluteSpacingLeft);
+                el.setAttribute(`data-${config.slug.short}-doc-absolute-width`, doc.absoluteDocWidth);
+                el.setAttribute(`data-${config.slug.short}-doc-absolute-height`, doc.absoluteDocHeight);
+                el.setAttribute(`data-${config.slug.short}-doc-aspect-ratio`, doc.aspectRatio);
+                el.setAttribute(`data-${config.slug.short}-doc-relative-object-width`, doc.relativeObjectWidth);
+                el.setAttribute(`data-${config.slug.short}-doc-relative-object-height`, doc.relativeObjectHeight);
+                el.setAttribute(`data-${config.slug.short}-doc-relative-to-top`, doc.relativeSpacingTop);
+                el.setAttribute(`data-${config.slug.short}-doc-relative-to-right`, doc.relativeSpacingRight);
+                el.setAttribute(`data-${config.slug.short}-doc-relative-to-bottom`, doc.relativeSpacingBottom);
+                el.setAttribute(`data-${config.slug.short}-doc-relative-to-left`, doc.relativeSpacingLeft);
+                el.setAttribute(`data-${config.slug.short}-doc-absolute-to-top`, doc.absoluteSpacingTop);
+                el.setAttribute(`data-${config.slug.short}-doc-absolute-to-right`, doc.absoluteSpacingRight);
+                el.setAttribute(`data-${config.slug.short}-doc-absolute-to-bottom`, doc.absoluteSpacingBottom);
+                el.setAttribute(`data-${config.slug.short}-doc-absolute-to-left`, doc.absoluteSpacingLeft);
             }
 
             /**
              * @description Adds the data-object-info attribute to the current element in the loop.
              * get this data from the trabsfoned JSON, not the the Old Approch with the string
              */
-            el.setAttribute('data-oji-summary', transformedObject);
+            el.setAttribute(`data-${config.slug.short}-summary`, transformedObject);
             /**
              * @description Adds the data-object-info-id attribute to the current element in the loop.
              */
-            if (el.hasAttribute('data-object-info-debug') || el.hasAttribute('data-oji-debug')) {
+            if (checkDebug) {
 
-                var existingDebugBox = el.querySelector('.object-info-debug-container');
+                var existingDebugBox = el.querySelector(`.${config.slug.short}-debug-container`);
 
                 /**
                  * randomNumberR
@@ -405,19 +439,19 @@
                 const randomNumberR = Math.floor(Math.random() * 256), randomNumberG = Math.floor(Math.random() * 256), randomNumberB = Math.floor(Math.random() * 256);
                 // Create a new div element for the debug box
 
-                var debugBox = document.createElement('div');
-                debugBox.setAttribute('class', 'object-info-debug-container');
+                let debugBox = document.createElement('div');
+                debugBox.setAttribute('class', `${config.slug.short}-debug-container`);
                 el.style.outlineColor = `rgba(${randomNumberR}, ${randomNumberG}, ${randomNumberB}, 0.33)`;
                 // Check if the debug box already exists
                 if (!existingDebugBox) {
                     // If it doesn't exist, create a new debug box
-                    var debugBox = document.createElement('div');
-                    debugBox.setAttribute('class', 'object-info-debug-container');
+                    debugBox = document.createElement('div');
+                    debugBox.setAttribute('class', `${config.slug.short}-debug-container`);
                     // ... [remaining debug box style and properties setup]
                     el.appendChild(debugBox); // Append the new debug box
                 } else {
                     // If it exists, use the existing debug box
-                    var debugBox = existingDebugBox;
+                    debugBox = existingDebugBox;
                 }
 
                 // Set the content of the debug box
@@ -428,7 +462,7 @@
                 el.appendChild(debugBox);
 
                 // Set the unique data-object-info-id
-                el.setAttribute('data-object-info-id', `${randomId}-${i}`);
+                el.setAttribute(`data-${config.slug.short}-id`, `${randomId}-${i}`);
 
                 /**
                  * 1. Create a div inside the .object-info-debug-container
@@ -447,16 +481,16 @@
      * @returns {Function}
      */
     function debounce(func, wait) {
-        var timeout;
+        let timeout;
 
         // This is the function that is returned and will be called many times
         return function executedFunction() {
             // The context and args are the scope (this) and parameters for the function
-            var context = this;
-            var args = arguments;
+            let context = this;
+            let args = arguments;
 
             // The function to be called after the debounce time has elapsed
-            var later = function () {
+            let later = function () {
                 // null the timeout to indicate the debounce ended
                 timeout = null;
                 // Execute the function
