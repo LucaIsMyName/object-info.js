@@ -1,4 +1,4 @@
-# README for Object Information Debugging and Styling Tool
+# oji.js
 
 ## Overview
 
@@ -26,16 +26,19 @@ This JavaScript snippet is designed to be a tool for developers and designers wh
 ## Installation
 
 1. Copy the entire script.
-2. Paste it into your project's main JavaScript file or include it as a separate script in your HTML.
+2. Paste it into your project's main JavaScript file or include it as a separate script in your HTML via  
+   ```html
+   <script src="path/to/object-info.js" defer></script>
+   ```
+3. Make sure the script is laoded after the DOM is loaded, use `defer` if you out the `<head>` of your document
 
 ## Usage
 1. **To enable the tool on an element:**
-   - Add the attribute data-object-info to any HTML element you want to inspect.
+   - Add the attribute `data-oji` to any HTML element you want to inspect. This will set a single HTML Attribute which gives you a summary of the elements position and size in relation to the viewport and document itself.
 2. **To view debugging visuals:**
-   - Add the attribute data-object-info-debug to the same element. This will activate the visual overlay with detailed metrics.
-3. **Viewing Results:**
-   - Once the attributes are added, and the page is loaded or resized, each specified element will display its metrics
-   - For elements with debugging enabled, a visual overlay will appear directly on the element.
+   - Add the attribute `data-oji-debug` to the same element. This will activate the visual overlay with detailed metrics.
+3. **To Animate or Style Elements**
+   - Add the `data-oji-attributes` to the element and Object Info will set all values as HTML Attributes whioch can be used by some other JS as anchor attributes and behave a certain way
 
 ## Notes for Users
 
