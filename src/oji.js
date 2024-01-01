@@ -25,7 +25,7 @@
         },
         slug: {
             short: 'oji',
-            long: 'oji',
+            long: 'object-info',
         }
     };
 
