@@ -4,7 +4,8 @@
  * @version 1.0
  * @description 
  * A JavaScript snippet that adds data attributes to HTML elements 
- * with information about their size and position relative to the viewport and document.
+ * with information about their size and position 
+ * relative to the viewport and document.
  * Use this to Debug Elements or Style them 
  * upon relative or absolute values in relation
  * to the viewport or the document
@@ -15,6 +16,7 @@
 (function () {
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
+     * @description
      * oji Config Const to fetch data from
      * ------------------------------------------------------------------------
      ------------------------------------------------------------------------*/
@@ -144,8 +146,10 @@
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
      * randomId
-     * @description A random number used to identify 
-     * the elements with the data-oji-debug attribute.
+     * @description 
+     * A random number used to identify 
+     * the elements with the data-oji-debug 
+     * attribute.
      * ------------------------------------------------------------------------
     ------------------------------------------------------------------------*/
     randomId = Math.floor(Math.random() * 9999);
@@ -153,7 +157,8 @@
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
      * style
-     * @description A style tag that contains the CSS 
+     * @description 
+     * A style tag that contains the CSS 
      * for the data-oji-debug attribute.
      * ------------------------------------------------------------------------
      ------------------------------------------------------------------------*/
@@ -254,7 +259,9 @@
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
      * calculateObjectInfo
-     * @description Calculates the object info and adds the data attributes to the elements.
+     * @description 
+     * Calculates the object info and adds 
+     * the data attributes to the elements.
      * @returns {void}
      * ------------------------------------------------------------------------
      ------------------------------------------------------------------------*/
@@ -262,33 +269,43 @@
 
         /**
          * elements
-         * @description An array of all elements with the data-oji attribute.
+         * @description 
+         * An array of all elements with the 
+         * [data-oji] attribute.
          */
         var elements = document.querySelectorAll(`[data-${ojiAtt}]`);
 
         /**
-         * @description Loops through all elements with the data-oji attribute and calculates the object info.
+         * @description 
+         * Loops through all elements with the 
+         * [data-oji] attribute and calculates 
+         * the object info.
          */
         for (var i = 0; i < elements.length; i++) {
             /**------------------------------------
-             * el
-             * @description The current element in the loop.
+             * @name el
+             * @description The current element 
+             * in the loop.
              ------------------------------------*/
             let el = elements[i];
 
             /**------------------------------------
+             * @description
              * Conditional checks for attributes 
-             * - oji-attributes
-             * - oji-debug
-             * - oji-styles
+             * - [oji-attributes]
+             * - [oji-debug]
+             * - [oji-styles]
              ------------------------------------*/
 
             let checkAttributes = el.hasAttribute(`data-${ojiAtt}-attributes`) || el.hasAttribute(`data-${config.slug.long}-attributes`) || el.hasAttribute(`data-${config.slug.short}-attributes`);
             let checkDebug = el.hasAttribute(`data-${ojiAtt}-debug`) || el.hasAttribute(`data-${config.slug.long}-debug`) || el.hasAttribute(`data-${config.slug.short}-debug`);
-            let checkSummary = el.hasAttribute(`data-${ojiAtt}-summary`) || el.getAttribute(`data-${config.slug.long}-summary`) || el.getAttribute(`data-${config.slug.short}-summary`);
+            // let checkSummary = el.hasAttribute(`data-${ojiAtt}-summary`) || el.getAttribute(`data-${config.slug.long}-summary`) || el.getAttribute(`data-${config.slug.short}-summary`);
+            let checkSummary = el.getAttribute(`data-${ojiAtt}-summary`);
+            let bodySummaryActive = document.body.getAttribute(`data-${ojiAtt}-summary-active`);
 
             /**------------------------------------------------------------------------
              * ------------------------------------------------------------------------
+             * @description
              * This part of the Software Calculates and fetches
              * the actual values thar are displayed as attributes 
              * and elements (debug)
@@ -302,59 +319,80 @@
 
             /**
              * style
-             * @description The computed style of the current element in the loop.
+             * @description 
+             * The computed style of the 
+             * current element in the loop.
              */
             let style = window.getComputedStyle(el);
 
             /**
              * widthPx & heightPx
-             * @description The width and height of the current element in pixels.
+             * @description 
+             * The width and height of the 
+             * current element in pixels.
              */
             let widthPx = parseFloat(style.width);
             let heightPx = parseFloat(style.height);
             /**
              * roundedWidth & roundedHeight
-             * @description The width of the current element in pixels rounded to the nearest integer.
+             * @description 
+             * The width of the current element 
+             * in pixels rounded to the 
+             * nearest integer.
              */
             let roundedWidth = Math.round(widthPx);
             let roundedHeight = Math.round(heightPx);
 
             /**
              * DocWidth & DocHeight
-             * @description The width and height of the document in pixels.
+             * @description 
+             * The width and height of 
+             * the document in pixels.
              */
             let DocWidth = document.documentElement.scrollWidth;
             let DocHeight = document.body.scrollHeight;
 
             /**
             * docWidthRelative & docHeightRelative
-            * @description The width of the current element in pixels relative to the document.
+            * @description 
+            * The width of the current element 
+            * in pixels relative to the document.
             */
             let docWidthRelative = (100 / DocWidth * roundedWidth).toFixed(1);
             let docHeightRelative = (100 / DocHeight * roundedHeight).toFixed(1);
 
             /**
              * viewPortWidth & viewPortHeight
-             * @description The width and height of the viewport in pixels.
+             * @description 
+             * The width and height of the
+             * viewport in pixels.
              */
             let viewPortWidth = window.innerWidth;
             let viewPortHeight = window.innerHeight;
 
             /**
              * viewPortWidthRelative & viewPortHeightRelative
-             * @description The width and height of the current element in pixels relative to the viewport.
+             * @description 
+             * The width and height of the current 
+             * element in pixels relative to the 
+             * viewport.
              */
             let viewPortWidthRelative = (100 / viewPortWidth * widthPx).toFixed(2);
             let viewPortHeightRelative = (100 / viewPortHeight * heightPx).toFixed(2);
 
             /**
+             * @name rect
+             * @description
              * Get the boundaries of the el
              */
             let rect = el.getBoundingClientRect();
 
             /**
-             * toViewport
-             * @description The distance from the edge of the viewport to the edge of the current element in pixels.
+             * @name toViewport
+             * @description 
+             * The distance from the edge 
+             * of the viewport to the edge of the 
+             * current element in pixels.
              */
             let topToViewport = rect.top;
             let rightToViewport = window.innerWidth - rect.right;
@@ -385,7 +423,8 @@
 
             /**
              * Styling Parameters
-             * Font Size, Family, Color and BG Colors
+             * Font Size, Family, Color 
+             * and BG Colors
              */
             let elementStyles = window.getComputedStyle(el);
             let fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
@@ -407,7 +446,8 @@
             let elementArea = widthPx * heightPx;
 
             /**
-             * Calc the Area visible inside the viewport of an oji element
+             * Calc the Area visible inside the 
+             * viewport of an oji element
              */
 
             // Calculate horizontal overlap
@@ -469,8 +509,8 @@
                     colorContrast: colorContrastRatio,
                 },
                 viewport: {
-                    absoluteViewportWidth: `${viewPortWidth}px`,
-                    absoluteViewportHeight: `${viewPortHeight}px`,
+                    absoluteWidth: `${viewPortWidth}px`,
+                    absoluteHeight: `${viewPortHeight}px`,
                     aspectRatio: `1:${(viewPortWidth / viewPortHeight).toFixed(2)}`,
                     relativeObjectWidth: `${viewPortWidthRelative}%`,
                     relativeObjectHeight: `${viewPortHeightRelative}%`,
@@ -484,8 +524,8 @@
                     absoluteSpacingLeft: `${Math.round(leftToViewport)}px`,
                 },
                 document: {
-                    absoluteDocWidth: `${DocWidth}px`,
-                    absoluteDocHeight: `${DocHeight}px`,
+                    absoluteWidth: `${DocWidth}px`,
+                    absoluteHeight: `${DocHeight}px`,
                     aspectRatio: `1:${(DocWidth / DocHeight).toFixed(2)}`,
                     relativeObjectWidth: `${docWidthRelative}%`,
                     relativeObjectHeight: `${docHeightRelative}%`,
@@ -518,18 +558,20 @@
             }
             /**------------------------------------------------------------------------
              * ------------------------------------------------------------------------
+             * { WORK IN PROGRESS }
              * @description 
              * Checks if the data-oji-summary is not set to false and
              * gets this data from the stringified JSON from transformJsonToHTMLString()
              * ------------------------------------------------------------------------
              * ------------------------------------------------------------------------*/
-            if (checkSummary != 'false' && checkSummary != false) {
+            if (checkSummary !== 'false') {
                 el.setAttribute(`data-${ojiAtt}-summary`, transformJsonToHTMLString(oji));
             }
 
             /**------------------------------------------------------------------------
              * ------------------------------------------------------------------------
-             * @description Check if data-oji-debug is set and 
+             * @description 
+             * Check if data-oji-debug is set and 
              * add the data-oji-id attribute to the current element 
              * in the loop and display debig overlays
              * ------------------------------------------------------------------------
@@ -537,14 +579,18 @@
             if (checkDebug) {
 
                 /**------------------------------------
-                 * red, green, blue
-                 * @description A random number between 0 and 255 to create a unique Color Outline for each debugged Box
+                 * @name red-green-blue
+                 * @description 
+                 * A random number between 0 and 255 to 
+                 * create a unique Color Outline for each 
+                 * debugged Box.
                  ------------------------------------*/
 
                 let debugBox = el.querySelector(`.${ojiAtt}-debug-container`);
 
                 /** ------------------------------------
-                 * Check if the debug box already exists  
+                 * Check if the debug 
+                 * box already exists  
                  ------------------------------------*/
 
                 if (!debugBox) {
@@ -554,20 +600,21 @@
                 }
                 debugBox.innerHTML = `<code>${prettifyObjectForHTML(oji)}</code>`;
                 el.setAttribute(`data-${ojiAtt}-id`, `${randomId}-${i}`);
-
             }
         }
     }
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
-     * Assign the debaounce Function to the calculateObjectInfo function
+     * Assign the debaounce Function 
+     * to the calculateObjectInfo function
      * ------------------------------------------------------------------------
      * ------------------------------------------------------------------------*/
     var debouncedCalculateObjectInfo = debounce(calculateObjectInfo, config.debounce || 250);
 
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
-     * Event Listener Loop for the calculateObjectInfo Events
+     * Event Listener Loop for the 
+     * calculateObjectInfo Events
      * ------------------------------------------------------------------------
      ------------------------------------------------------------------------*/
 
@@ -585,8 +632,17 @@
         );
     }
 
+
+
     /**------------------------------------------------------------------------
-     * WORK IN PROGRESS
+     * oji.js calculatiuon is finished and rendered to the DOM
+     * now set interactions like:
+     * 1. if some js changes the [data-oji-attributes-active] on the <body>
+     * all attributes get removed from the DOM,
+     * if it's set to "true" again it applies them again
+     * 
+     * 
+     * { WORK IN PROGRESS }
      * Listen to global events on the body that change the 
      * [data-oji-active], [data-oji-attributes-active] & [dataoji-debug-active] bools
      * to true
@@ -637,7 +693,6 @@
             });
         });
     }
-
 
     // Create an observer instance linked to the handleAttributeChange callback function
     const observer = new MutationObserver(handleAttributeChange);

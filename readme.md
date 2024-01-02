@@ -52,9 +52,32 @@ oji can appyl the following informations about any given HTML Element:
          aspectRatio: `1:${float}`,
          viewportAreaPercentagle: `${float}%`,
          viewportAreaVisible: `${float}%`,
-         documentAreaPercentagle: `${float}%`,
+         documentAreaPercentage: `${float}%`,
          documentAreaVisible: `${float}%`,
-      } 
+         fontSizePx: `${float}px`,
+         fontSizeRem: `${float}rem`,
+         fontSizeVw: `${float}vw`,
+         fontSizeFamily: `${string}`,
+         color: `${string}`,
+         backgroundColor: `${string}`,
+         colorContrast: `${float}`,
+      },
+      viewport: {
+         absoluteWidth: `${integer}px`,
+         absoluteHeight: `${integer}px`,
+         aspectRatio: `${integer}px`,
+         relativeObjectWidth: `${integer}%`,
+         relativeObjectHeight: `${integer}%`,
+         ...
+      },
+      document: {
+         absoluteWidth: `${integer}px`,
+         absoluteHeight: `${integer}px`,
+         aspectRatio: `${integer}px`,
+         relativeObjectWidth: `${integer}%`,
+         relativeObjectHeight: `${integer}%`,
+         ...
+      }
    }
 ```
 
