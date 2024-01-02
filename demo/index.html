@@ -1,5 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+<!-- ------------------------------------------------------------
+    This file is a Demo and Testing file for
+    oji.js. In the DOM are Elements with certain styling
+    and layout proprtioes set the by CSS in the <head>
+    on the elements itself there are differrent data-oji attributes
+    
+------------------------------------------------------------ -->
 
 <head>
     <meta charset="UTF-8">
@@ -7,6 +14,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Object Info Demo</title>
     <style>
+        /* 
+        This Styling gives each el
+        it's layout, oji should compute the
+        values correctly and render them in FE & attributes
+        inside the DOM dynaimcally
+        */
+        :root {
+            --font-size: 2.5rem;
+        }
+
         * {
             box-sizing: border-box;
             padding: 0;
@@ -14,20 +31,19 @@
         }
 
         body {
-
-
             margin: 0;
             padding: 0;
             font-family: Arial,
                 Helvetica,
                 sans-serif;
+               
         }
 
         h1 {
             margin: 8px
         }
 
-        .object-info {
+        .flex {
             display: flex;
             gap: 2;
             flex-wrap: wrap;
@@ -37,6 +53,9 @@
             padding: 10px;
             margin: 10px;
             background-color: beige;
+            min-width: 300px;
+            min-height: 300px;
+            flex: 1 1 0%;
         }
 
         :where(.object-info-element:nth-child(odd)) {
@@ -46,6 +65,10 @@
 
         .height-100vh {
             height: 100vh;
+        }
+
+        .height-32rem {
+            height: 32rem;
         }
 
         .height-16rem {
@@ -72,14 +95,25 @@
             width: 66.66%;
         }
 
+        /* Font Size Tests */
+
         .font-size-big {
             font-size: 3rem;
+        }
+
+        .font-size-var {
+            font-size: var(--font-size);
+        }
+
+        .font-size-var-big {
+            font-size: calc(var(--font-size) + 1vw * 2);
         }
 
         .clamped-font {
             font-size: clamp(13px, 2vw, 24px);
         }
 
+        /* Color Contrast Tests */
         .bg-black {
             background-color: black;
         }
@@ -104,30 +138,82 @@
             font-family: 'Times New Roman', Times, serif;
         }
 
+        .flex-auto {
+            flex: 1 1 0%;
+        }
     </style>
 </head>
 
-<body>
+<body >
     <section>
         <h1>Object Info Demo</h1>
-        <div class="object-info">
-            <section data-oji-summary="false" data-oji data-oji-summary="false" data-oji-attributes data-oji-debug
-                class="serif object-info-element height-100vh width-100">
+        <div>
+            <!--
+                The are buttons that change CSS properties via click
+                dyamically, oji, js should track these changes and apply 
+                the to the oji object, attributes, summary and debig container
+            -->
+            <button data-change-width="">Resize</button>
+            <button data-change-color="">Color</button>
+            <button data-change-display="">Display</button>
+        </div>
+        <hr style="margin-block: 1rem;">
+        <section class="width-100 button-target-display object-info">
+            <section style="margin-bottom:1rem;" class="object-info-element" data-oji data-oji-debug
+                class="flex-auto height-32rem bg-black">
+            </section>
+            <section style="margin-bottom:1rem;" class="object-info-element" data-oji data-oji-attributes data-oji-debug
+                class="flex-auto height-32rem bg-black">
 
             </section>
-            <section data-oji data-oji-style-attributes
+        </section>
+        <div class="object-info flex">
+            <section data-oji data-oji-attributes data-oji-debug
+                class="serif button-target-color object-info-element height-100vh width-100 button-target">
+            </section>
+            <section data-oji data-oji-summary="false" data-oji-attributes
                 class=" object-info-element height-16rem width-33 clamped-font">
             </section>
-            <section data-oji data-oji-debug class="bg-black text-grey object-info-element height-100vh width-50 font-size-big">
+            <section data-oji data-oji-attributes
+                class="bg-black text-grey object-info-element height-100vh width-50 font-size-var-big">
             </section>
+
         </div>
     </section>
+    <script>
+        /*
+        JS for testing puposes
+        these eventlisteners change the layout and styling of elements
+        in the DOM.
+        */
+        /* Change the Size of an Element Dynamically -> absolute and relative positions and layout should change */
+        const resizeButton = document.querySelector('[data-change-width]');
+        resizeButton.addEventListener('click', () => {
+            const target = document.querySelector('.button-target');
+            target.style.width = '66%';
+            target.style.flex = '66%';
+            target.style.flexShrink = '0';
+        })
+        /* Change the Text-Color of an Element Dynamically -> Color and Contrast Rati should calc new */
+        const colorButton = document.querySelector('[data-change-color]');
+        colorButton.addEventListener('click', () => {
+            const target = document.querySelector('.button-target-color');
+            target.style.color = '#fff';
+        })
+        /* Change the Text-Color of an Element Dynamically -> Color and Contrast Rati should calc new */
+        const displayButton = document.querySelector('[data-change-display]');
+        displayButton.addEventListener('click', () => {
+            const target = document.querySelector('.button-target-display');
+            target.style.display = 'flex';
+            target.style.gap = '1rem';
+        })
+    </script>
     <style>
         /* :root {
             --oji-max-width: 400px;
         } */
     </style>
-    <script src="../src/oji.min.js"></script>
+    <script src="../src/oji.js"></script>
 </body>
 
 </html>
