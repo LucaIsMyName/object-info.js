@@ -20,11 +20,14 @@
      * oji Config Const to fetch data from
      * ------------------------------------------------------------------------
      ------------------------------------------------------------------------*/
+
     const config = {
         info: {
             name: 'oji.js',
             version: '0.1',
+            id: getOrCreateRandomId(),
         },
+
         attribute: 'oji',
         slug: {
             short: 'oji',
@@ -62,6 +65,10 @@
         ],
     };
 
+    function getOrCreateRandomId() {
+        randomId = Math.floor(Math.random() * 9999);
+    }
+
     const ojiName = config.info.name;
     const ojiAtt = config.attribute;
     const ojiVersion = config.info.version;
@@ -70,7 +77,7 @@
 
     const checkIfOjiIsPresent = document.querySelector(`[data-${ojiAtt}]`);
     const checkIfOjiAttributesIsPresent = document.querySelector(`[data-${ojiAtt}][data-${ojiAtt}-attributes]`);
-    const checkIfOjiDebugIPresent = document.querySelector(`[data-${ojiAtt}][data-${ojiAtt}-debug]`);
+    const checkIfOjiDebugIsPresent = document.querySelector(`[data-${ojiAtt}][data-${ojiAtt}-debug]`);
 
     if (checkIfOjiIsPresent) {
         body.setAttribute(`data-${ojiAtt}-active`, 'true');
@@ -91,12 +98,20 @@
         console.log(`No Element found in the DOM that has the [data-${ojiAtt}-attributes] attribute set.`);
     }
 
+
     /**
     * If the [data-oji-debug] is on any element (at least one)
     * Make a Div at the bottom of the <body> Tag
     */
-    if (checkIfOjiIsPresent && checkIfOjiDebugIPresent) {
+    let bodyHasDebugAttPresent = body.getAttribute(`data-${ojiAtt}-debug-active`);
+    body.setAttribute(`data-${ojiAtt}-debug-active`, `${bodyHasDebugAttPresent || 'true'}`);
+    console.log(body);
+    if (document.body.getAttribute(`data-${ojiAtt}-debug-active`) === 'false') {
+        return;
+    }
+    else {
         body.setAttribute(`data-${ojiAtt}-debug-active`, 'true');
+
         debugGlobalContainer = document.createElement('div');
         debugGlobalContainer.setAttribute('class', `${ojiAtt}-global-debug-container`);
         debugGlobalContainer.innerHTML = `<div>
@@ -133,12 +148,14 @@
 
         document.body.appendChild(debugGlobalContainer);
         console.log(`Element found in the DOM that has the [data-${ojiAtt}-debug] attribute set.`);
-
-    } else {
-        body.setAttribute(`data-${ojiAtt}-debug-active`, 'false');
-        console.log(`No Element found in the DOM that has the [data-${ojiAtt}-debug] attribute set.`);
     }
-
+    /**------------------------------------
+     * @name red-green-blue
+     * @description 
+     * A random number between 0 and 255 to 
+     * create a unique Color Outline for each 
+     * debugged Box.
+     ------------------------------------*/
 
     /** random Number generator */
     const red = Math.floor(Math.random() * 256), green = Math.floor(Math.random() * 256), blue = Math.floor(Math.random() * 256);
@@ -152,7 +169,6 @@
      * attribute.
      * ------------------------------------------------------------------------
     ------------------------------------------------------------------------*/
-    randomId = Math.floor(Math.random() * 9999);
 
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
@@ -254,8 +270,6 @@
         }`;
     document.head.appendChild(style);
 
-
-
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
      * calculateObjectInfo
@@ -266,340 +280,349 @@
      * ------------------------------------------------------------------------
      ------------------------------------------------------------------------*/
     function calculateObjectInfo() {
+        if (document.body.getAttribute(`data-${ojiAtt}-active`) === 'true') {
 
-        /**
-         * elements
-         * @description 
-         * An array of all elements with the 
-         * [data-oji] attribute.
-         */
-        var elements = document.querySelectorAll(`[data-${ojiAtt}]`);
-
-        /**
-         * @description 
-         * Loops through all elements with the 
-         * [data-oji] attribute and calculates 
-         * the object info.
-         */
-        for (var i = 0; i < elements.length; i++) {
-            /**------------------------------------
-             * @name el
-             * @description The current element 
-             * in the loop.
-             ------------------------------------*/
-            let el = elements[i];
-
-            /**------------------------------------
-             * @description
-             * Conditional checks for attributes 
-             * - [oji-attributes]
-             * - [oji-debug]
-             * - [oji-styles]
-             ------------------------------------*/
-
-            let checkAttributes = el.hasAttribute(`data-${ojiAtt}-attributes`) || el.hasAttribute(`data-${config.slug.long}-attributes`) || el.hasAttribute(`data-${config.slug.short}-attributes`);
-            let checkDebug = el.hasAttribute(`data-${ojiAtt}-debug`) || el.hasAttribute(`data-${config.slug.long}-debug`) || el.hasAttribute(`data-${config.slug.short}-debug`);
-            // let checkSummary = el.hasAttribute(`data-${ojiAtt}-summary`) || el.getAttribute(`data-${config.slug.long}-summary`) || el.getAttribute(`data-${config.slug.short}-summary`);
-            let checkSummary = el.getAttribute(`data-${ojiAtt}-summary`);
-            let bodySummaryActive = document.body.getAttribute(`data-${ojiAtt}-summary-active`);
-
-            /**------------------------------------------------------------------------
-             * ------------------------------------------------------------------------
-             * @description
-             * This part of the Software Calculates and fetches
-             * the actual values thar are displayed as attributes 
-             * and elements (debug)
-             * ------------------------------------------------------------------------
-            ------------------------------------------------------------------------ */
-            /**
-             * Scroll Position
-             */
-            let scrollX = window.scrollX;
-            let scrollY = window.scrollY;
 
             /**
-             * style
+             * elements
              * @description 
-             * The computed style of the 
-             * current element in the loop.
+             * An array of all elements with the 
+             * [data-oji] attribute.
              */
-            let style = window.getComputedStyle(el);
+            var elements = document.querySelectorAll(`[data-${ojiAtt}]`);
 
             /**
-             * widthPx & heightPx
              * @description 
-             * The width and height of the 
-             * current element in pixels.
+             * Loops through all elements with the 
+             * [data-oji] attribute and calculates 
+             * the object info.
              */
-            let widthPx = parseFloat(style.width);
-            let heightPx = parseFloat(style.height);
-            /**
-             * roundedWidth & roundedHeight
-             * @description 
-             * The width of the current element 
-             * in pixels rounded to the 
-             * nearest integer.
-             */
-            let roundedWidth = Math.round(widthPx);
-            let roundedHeight = Math.round(heightPx);
-
-            /**
-             * DocWidth & DocHeight
-             * @description 
-             * The width and height of 
-             * the document in pixels.
-             */
-            let DocWidth = document.documentElement.scrollWidth;
-            let DocHeight = document.body.scrollHeight;
-
-            /**
-            * docWidthRelative & docHeightRelative
-            * @description 
-            * The width of the current element 
-            * in pixels relative to the document.
-            */
-            let docWidthRelative = (100 / DocWidth * roundedWidth).toFixed(1);
-            let docHeightRelative = (100 / DocHeight * roundedHeight).toFixed(1);
-
-            /**
-             * viewPortWidth & viewPortHeight
-             * @description 
-             * The width and height of the
-             * viewport in pixels.
-             */
-            let viewPortWidth = window.innerWidth;
-            let viewPortHeight = window.innerHeight;
-
-            /**
-             * viewPortWidthRelative & viewPortHeightRelative
-             * @description 
-             * The width and height of the current 
-             * element in pixels relative to the 
-             * viewport.
-             */
-            let viewPortWidthRelative = (100 / viewPortWidth * widthPx).toFixed(2);
-            let viewPortHeightRelative = (100 / viewPortHeight * heightPx).toFixed(2);
-
-            /**
-             * @name rect
-             * @description
-             * Get the boundaries of the el
-             */
-            let rect = el.getBoundingClientRect();
-
-            /**
-             * @name toViewport
-             * @description 
-             * The distance from the edge 
-             * of the viewport to the edge of the 
-             * current element in pixels.
-             */
-            let topToViewport = rect.top;
-            let rightToViewport = window.innerWidth - rect.right;
-            let bottomToViewport = window.innerHeight - rect.bottom;
-            let leftToViewport = rect.left;
-
-            /**
-             * spacingLeftViewportRelative
-             * @description The distance from the edge of the viewport to the edge of the current element in pixels relative to the viewport.
-             */
-            let spacingLeftViewportRelative = (100 / viewPortWidth * leftToViewport).toFixed(2);
-            let spacingRightViewportRelative = (100 / viewPortWidth * rightToViewport).toFixed(2);
-            let spacingTopViewportRelative = (100 / viewPortHeight * topToViewport).toFixed(2);
-            let spacingBottomViewportRelative = (100 / viewPortHeight * bottomToViewport).toFixed(2);
-
-            /**
-             * spacingsDoc
-             * @description The distance from the left edge of the viewport to the left edge of the current element in pixels relative to the document.
-             */
-            let spacingLeftDocRelative = ((100 / DocWidth) * (leftToViewport + scrollX)).toFixed(2);
-            let spacingRightDocRelative = (100 - ((leftToViewport + scrollX + widthPx) * 100 / DocWidth)).toFixed(2);
-            let spacingTopDocRelative = ((100 / DocHeight) * (topToViewport + scrollY)).toFixed(2);
-            let spacingBottomDocRelative = (100 - ((topToViewport + scrollY + heightPx) * 100 / DocHeight)).toFixed(2);
-            let spacingLeftDocPx = leftToViewport + scrollX;
-            let spacingRightDocPx = DocWidth - (leftToViewport + scrollX + widthPx);
-            let spacingTopDocPx = topToViewport + scrollY;
-            let spacingBottomDocPx = DocHeight - (topToViewport + scrollY + heightPx);
-
-            /**
-             * Styling Parameters
-             * Font Size, Family, Color 
-             * and BG Colors
-             */
-            let elementStyles = window.getComputedStyle(el);
-            let fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
-            let fontSizePx = fontSize;
-            let fontSizeRem = fontSize / 16;
-            let fontSizeVw = parseFloat(100 / viewPortWidth * fontSize).toFixed(2);
-            let fontFamily = `${elementStyles.getPropertyValue('font-family')}`;
-            let color = `${elementStyles.getPropertyValue('color')}`;
-            let backgroundColor = `${elementStyles.getPropertyValue('background-color')}`;
-            let rgbColor = parseColor(color);
-            let rgbBackgroundColor = parseColor(backgroundColor);
-            let colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
-
-            /**
-             * Calc the Area of an Element
-             */
-            let viewportArea = viewPortWidth * viewPortHeight;
-            let documentArea = DocWidth * DocHeight;
-            let elementArea = widthPx * heightPx;
-
-            /**
-             * Calc the Area visible inside the 
-             * viewport of an oji element
-             */
-
-            // Calculate horizontal overlap
-            let leftEdgeInsideViewport = Math.max(spacingLeftDocPx, 0);
-            let rightEdgeInsideViewport = Math.min(spacingLeftDocPx + widthPx, viewPortWidth);
-            let visibleWidth = Math.max(0, rightEdgeInsideViewport - leftEdgeInsideViewport);
-            // Calculate vertical overlap
-            let topEdgeInsideViewport = Math.max(topToViewport, 0);
-            let bottomEdgeInsideViewport = Math.min(topToViewport + heightPx, viewPortHeight);
-            let visibleHeight = Math.max(0, bottomEdgeInsideViewport - topEdgeInsideViewport);
-            // Calculate the visible area of the element
-            let visibleArea = visibleWidth * visibleHeight;
-            // Calculate the percentage of the element that's visible
-            let percentageVisible = (visibleArea / elementArea * 100).toFixed(2);
-
-            /**
-            * Calc the Area visible inside the viewport of an oji element
-            */
-
-            // Calculate horizontal overlap
-            let leftEdgeInsideDoc = Math.max(spacingLeftDocPx, 0);
-            let rightEdgeInsideDoc = Math.min(spacingLeftDocPx + widthPx, DocWidth);
-            let visibleWidthDoc = Math.max(0, rightEdgeInsideDoc - leftEdgeInsideDoc);
-            // Calculate vertical overlap
-            let topEdgeInsideDoc = Math.max(spacingTopDocPx, 0);
-            let bottomEdgeInsideDoc = Math.min(spacingTopDocPx + heightPx, DocHeight);
-            let visibleHeightDoc = Math.max(0, bottomEdgeInsideDoc - topEdgeInsideDoc);
-            // Calculate the visible area of the element
-            let visibleAreaDoc = visibleWidthDoc * visibleHeightDoc;
-            // Calculate the percentage of the element that's visible
-            let percentageVisibleDoc = (visibleAreaDoc / elementArea * 100).toFixed(2);
-
-            /**------------------------------------------------------------------------
-             * ------------------------------------------------------------------------
-             * @param {object} oji
-             * store all the calculated Values in a 
-             * global objet to render from 
-             * there in the UI
-             * ------------------------------------------------------------------------
-             ------------------------------------------------------------------------*/
-            let oji = {
-                info: {
-                    id: randomId + '-' + i,
-                },
-                object: {
-                    absoluteWidth: `${roundedWidth}px`,
-                    absoluteHeight: `${roundedHeight}px`,
-                    aspectRatio: `1:${(widthPx / heightPx).toFixed(2)}`,
-                    relativeAreaInViewport: ((elementArea / viewportArea) * 100).toFixed(2) + '%',
-                    relativeAreaInViewportVisible: `${percentageVisible}%`,
-                    relativeAreaInDocument: ((elementArea / documentArea) * 100).toFixed(2) + '%',
-                    relativeAreaInDocumentVisible: `${percentageVisibleDoc}%`,
-                    fontSizePx: fontSizePx + 'px',
-                    fontSizeRem: fontSizeRem + 'rem',
-                    fontSizeVw: fontSizeVw + 'vw',
-                    fontFamily: fontFamily,
-                    color: color,
-                    backgroundColor: backgroundColor,
-                    colorContrast: colorContrastRatio,
-                },
-                viewport: {
-                    absoluteWidth: `${viewPortWidth}px`,
-                    absoluteHeight: `${viewPortHeight}px`,
-                    aspectRatio: `1:${(viewPortWidth / viewPortHeight).toFixed(2)}`,
-                    relativeObjectWidth: `${viewPortWidthRelative}%`,
-                    relativeObjectHeight: `${viewPortHeightRelative}%`,
-                    relativeSpacingTop: `${spacingTopViewportRelative}%`,
-                    relativeSpacingRight: `${spacingRightViewportRelative}%`,
-                    relativeSpacingBottom: `${spacingBottomViewportRelative}%`,
-                    relativeSpacingLeft: `${spacingLeftViewportRelative}%`,
-                    absoluteSpacingTop: `${Math.round(topToViewport)}px`,
-                    absoluteSpacingRight: `${Math.round(rightToViewport)}px`,
-                    absoluteSpacingBottom: `${Math.round(bottomToViewport)}px`,
-                    absoluteSpacingLeft: `${Math.round(leftToViewport)}px`,
-                },
-                document: {
-                    absoluteWidth: `${DocWidth}px`,
-                    absoluteHeight: `${DocHeight}px`,
-                    aspectRatio: `1:${(DocWidth / DocHeight).toFixed(2)}`,
-                    relativeObjectWidth: `${docWidthRelative}%`,
-                    relativeObjectHeight: `${docHeightRelative}%`,
-                    relativeSpacingTop: `${spacingTopDocRelative}%`,
-                    relativeSpacingRight: `${spacingRightDocRelative}%`,
-                    relativeSpacingBottom: `${spacingBottomDocRelative}%`,
-                    relativeSpacingLeft: `${spacingLeftDocRelative}%`,
-                    absoluteSpacingTop: `${Math.round(spacingTopDocPx)}px`,
-                    absoluteSpacingRight: `${Math.round(spacingRightDocPx)}px`,
-                    absoluteSpacingBottom: `${Math.round(spacingBottomDocPx)}px`,
-                    absoluteSpacingLeft: `${Math.round(spacingLeftDocPx)}px`,
-                }
-            };
-
-            /**------------------------------------------------------------------------
-             * ------------------------------------------------------------------------
-             * @description Adds the data attributes to the 
-             * current element in the loop if the attribute 
-             * [data-oji-attributes] is set
-             * ------------------------------------------------------------------------
-             ------------------------------------------------------------------------*/
-            if (checkAttributes && document.body.getAttribute('data-oji-attributes-active') === "true") {
-                ['object', 'viewport', 'document'].forEach(section => {
-                    for (const [key, value] of Object.entries(oji[section])) {
-                        // Transform camelCase keys to kebab-case for attributes
-                        const attributeKey = camelToKebabCase(key);
-                        el.setAttribute(`data-${ojiAtt}-${section}-${attributeKey}`, value);
-                    }
-                });
-            }
-            /**------------------------------------------------------------------------
-             * ------------------------------------------------------------------------
-             * { WORK IN PROGRESS }
-             * @description 
-             * Checks if the data-oji-summary is not set to false and
-             * gets this data from the stringified JSON from transformJsonToHTMLString()
-             * ------------------------------------------------------------------------
-             * ------------------------------------------------------------------------*/
-            if (checkSummary !== 'false') {
-                el.setAttribute(`data-${ojiAtt}-summary`, transformJsonToHTMLString(oji));
-            }
-
-            /**------------------------------------------------------------------------
-             * ------------------------------------------------------------------------
-             * @description 
-             * Check if data-oji-debug is set and 
-             * add the data-oji-id attribute to the current element 
-             * in the loop and display debig overlays
-             * ------------------------------------------------------------------------
-             ------------------------------------------------------------------------*/
-            if (checkDebug) {
+            for (var i = 0; i < elements.length; i++) {
+                /**------------------------------------
+                 * @name el
+                 * @description The current element 
+                 * in the loop.
+                 ------------------------------------*/
+                let el = elements[i];
 
                 /**------------------------------------
-                 * @name red-green-blue
+                 * @description
+                 * Conditional checks for attributes 
+                 * - [oji-attributes]
+                 * - [oji-debug]
+                 * - [oji-styles]
+                 ------------------------------------*/
+
+                let checkAttributes = el.hasAttribute(`data-${ojiAtt}-attributes`) || el.hasAttribute(`data-${config.slug.long}-attributes`) || el.hasAttribute(`data-${config.slug.short}-attributes`);
+                let checkDebug = el.hasAttribute(`data-${ojiAtt}-debug`) || el.hasAttribute(`data-${config.slug.long}-debug`) || el.hasAttribute(`data-${config.slug.short}-debug`);
+                let checkSummary = el.getAttribute(`data-${ojiAtt}-summary`);
+                let bodySummaryActive = document.body.getAttribute(`data-${ojiAtt}-summary-active`);
+
+                /**------------------------------------------------------------------------
+                 * ------------------------------------------------------------------------
+                 * @description
+                 * This part of the Software Calculates and fetches
+                 * the actual values thar are displayed as attributes 
+                 * and elements (debug)
+                 * ------------------------------------------------------------------------
+                ------------------------------------------------------------------------ */
+                /**
+                 * Scroll Position
+                 */
+                let scrollX = window.scrollX;
+                let scrollY = window.scrollY;
+
+                /**
+                 * style
                  * @description 
-                 * A random number between 0 and 255 to 
-                 * create a unique Color Outline for each 
-                 * debugged Box.
-                 ------------------------------------*/
+                 * The computed style of the 
+                 * current element in the loop.
+                 */
+                let style = window.getComputedStyle(el);
 
-                let debugBox = el.querySelector(`.${ojiAtt}-debug-container`);
+                /**
+                 * widthPx & heightPx
+                 * @description 
+                 * The width and height of the 
+                 * current element in pixels.
+                 */
+                let widthPx = parseFloat(style.width);
+                let heightPx = parseFloat(style.height);
+                /**
+                 * roundedWidth & roundedHeight
+                 * @description 
+                 * The width of the current element 
+                 * in pixels rounded to the 
+                 * nearest integer.
+                 */
+                let roundedWidth = Math.round(widthPx);
+                let roundedHeight = Math.round(heightPx);
 
-                /** ------------------------------------
-                 * Check if the debug 
-                 * box already exists  
-                 ------------------------------------*/
+                /**
+                 * DocWidth & DocHeight
+                 * @description 
+                 * The width and height of 
+                 * the document in pixels.
+                 */
+                let DocWidth = document.documentElement.scrollWidth;
+                let DocHeight = document.body.scrollHeight;
 
-                if (!debugBox) {
-                    debugBox = document.createElement('div');
-                    debugBox.setAttribute('class', `${ojiAtt}-debug-container`);
-                    el.appendChild(debugBox);
+                /**
+                * docWidthRelative & docHeightRelative
+                * @description 
+                * The width of the current element 
+                * in pixels relative to the document.
+                */
+                let docWidthRelative = (100 / DocWidth * roundedWidth).toFixed(1);
+                let docHeightRelative = (100 / DocHeight * roundedHeight).toFixed(1);
+
+                /**
+                 * viewPortWidth & viewPortHeight
+                 * @description 
+                 * The width and height of the
+                 * viewport in pixels.
+                 */
+                let viewPortWidth = window.innerWidth;
+                let viewPortHeight = window.innerHeight;
+
+                /**
+                 * viewPortWidthRelative & viewPortHeightRelative
+                 * @description 
+                 * The width and height of the current 
+                 * element in pixels relative to the 
+                 * viewport.
+                 */
+                let viewPortWidthRelative = (100 / viewPortWidth * widthPx).toFixed(2);
+                let viewPortHeightRelative = (100 / viewPortHeight * heightPx).toFixed(2);
+
+                /**
+                 * @name rect
+                 * @description
+                 * Get the boundaries of the el
+                 */
+                let rect = el.getBoundingClientRect();
+
+                /**
+                 * @name toViewport
+                 * @description 
+                 * The distance from the edge 
+                 * of the viewport to the edge of the 
+                 * current element in pixels.
+                 */
+                let topToViewport = rect.top;
+                let rightToViewport = window.innerWidth - rect.right;
+                let bottomToViewport = window.innerHeight - rect.bottom;
+                let leftToViewport = rect.left;
+
+                /**
+                 * @name spacingViewportRelative
+                 * @description The distance from the edge of the viewport to the edge of the current element in pixels relative to the viewport.
+                 */
+                let spacingLeftViewportRelative = (100 / viewPortWidth * leftToViewport).toFixed(2);
+                let spacingRightViewportRelative = (100 / viewPortWidth * rightToViewport).toFixed(2);
+                let spacingTopViewportRelative = (100 / viewPortHeight * topToViewport).toFixed(2);
+                let spacingBottomViewportRelative = (100 / viewPortHeight * bottomToViewport).toFixed(2);
+
+                /**
+                 * spacingsDoc
+                 * @description The distance from the left edge of the viewport to the left edge of the current element in pixels relative to the document.
+                 */
+                let spacingLeftDocRelative = ((100 / DocWidth) * (leftToViewport + scrollX)).toFixed(2);
+                let spacingRightDocRelative = (100 - ((leftToViewport + scrollX + widthPx) * 100 / DocWidth)).toFixed(2);
+                let spacingTopDocRelative = ((100 / DocHeight) * (topToViewport + scrollY)).toFixed(2);
+                let spacingBottomDocRelative = (100 - ((topToViewport + scrollY + heightPx) * 100 / DocHeight)).toFixed(2);
+                let spacingLeftDocPx = leftToViewport + scrollX;
+                let spacingRightDocPx = DocWidth - (leftToViewport + scrollX + widthPx);
+                let spacingTopDocPx = topToViewport + scrollY;
+                let spacingBottomDocPx = DocHeight - (topToViewport + scrollY + heightPx);
+
+                /**
+                 * @elementStyles
+                 * Styling Parameters
+                 * Font Size, Family, Color 
+                 * and BG Colors
+                 */
+                let elementStyles = window.getComputedStyle(el);
+                console.log(elementStyles);
+                let fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
+                let fontSizePx = fontSize;
+                let fontSizeRem = fontSize / 16;
+                let fontSizeVw = parseFloat(100 / viewPortWidth * fontSize).toFixed(2);
+                let fontFamily = `${elementStyles.getPropertyValue('font-family')}`;
+                let color = `${elementStyles.getPropertyValue('color')}`;
+                let backgroundColor = `${elementStyles.getPropertyValue('background-color')}`;
+                let rgbColor = parseColor(color);
+                let rgbBackgroundColor = parseColor(backgroundColor);
+                let colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
+
+                /**
+                 * Calc the Area of an Element
+                 */
+                let viewportArea = viewPortWidth * viewPortHeight;
+                let documentArea = DocWidth * DocHeight;
+                let elementArea = widthPx * heightPx;
+
+                /**
+                 * Calc the Area visible inside the 
+                 * viewport of an oji element
+                 */
+
+                // Calculate horizontal overlap
+                let leftEdgeInsideViewport = Math.max(spacingLeftDocPx, 0);
+                let rightEdgeInsideViewport = Math.min(spacingLeftDocPx + widthPx, viewPortWidth);
+                let visibleWidth = Math.max(0, rightEdgeInsideViewport - leftEdgeInsideViewport);
+                // Calculate vertical overlap
+                let topEdgeInsideViewport = Math.max(topToViewport, 0);
+                let bottomEdgeInsideViewport = Math.min(topToViewport + heightPx, viewPortHeight);
+                let visibleHeight = Math.max(0, bottomEdgeInsideViewport - topEdgeInsideViewport);
+                // Calculate the visible area of the element
+                let visibleArea = visibleWidth * visibleHeight;
+                // Calculate the percentage of the element that's visible
+                let percentageVisible = (visibleArea / elementArea * 100).toFixed(2);
+
+                /**
+                * Calc the Area visible inside the document of an oji element
+                */
+
+                // Calculate horizontal overlap
+                let leftEdgeInsideDoc = Math.max(spacingLeftDocPx, 0);
+                let rightEdgeInsideDoc = Math.min(spacingLeftDocPx + widthPx, DocWidth);
+                let visibleWidthDoc = Math.max(0, rightEdgeInsideDoc - leftEdgeInsideDoc);
+                // Calculate vertical overlap
+                let topEdgeInsideDoc = Math.max(spacingTopDocPx, 0);
+                let bottomEdgeInsideDoc = Math.min(spacingTopDocPx + heightPx, DocHeight);
+                let visibleHeightDoc = Math.max(0, bottomEdgeInsideDoc - topEdgeInsideDoc);
+                // Calculate the visible area of the element
+                let visibleAreaDoc = visibleWidthDoc * visibleHeightDoc;
+                // Calculate the percentage of the element that's visible
+                let percentageVisibleDoc = (visibleAreaDoc / elementArea * 100).toFixed(2);
+
+                /**------------------------------------------------------------------------
+                 * ------------------------------------------------------------------------
+                 * @param {object} oji
+                 * store all the calculated Values in a 
+                 * global objet to render from 
+                 * there in the UI
+                 * ------------------------------------------------------------------------
+                 ------------------------------------------------------------------------*/
+                let oji = {
+                    info: {
+                        id: randomId + '-' + i,
+                    },
+                    object: {
+                        absoluteWidth: `${roundedWidth}px`,
+                        absoluteHeight: `${roundedHeight}px`,
+                        aspectRatio: `1:${(widthPx / heightPx).toFixed(2)}`,
+                        relativeAreaInViewport: ((elementArea / viewportArea) * 100).toFixed(2) + '%',
+                        relativeAreaInViewportVisible: `${percentageVisible}%`,
+                        relativeAreaInDocument: ((elementArea / documentArea) * 100).toFixed(2) + '%',
+                        relativeAreaInDocumentVisible: `${percentageVisibleDoc}%`,
+                        fontSizePx: fontSizePx + 'px',
+                        fontSizeRem: fontSizeRem + 'rem',
+                        fontSizeVw: fontSizeVw + 'vw',
+                        fontFamily: fontFamily,
+                        color: color,
+                        backgroundColor: backgroundColor,
+                        colorContrast: colorContrastRatio,
+                    },
+                    viewport: {
+                        absoluteWidth: `${viewPortWidth}px`,
+                        absoluteHeight: `${viewPortHeight}px`,
+                        aspectRatio: `1:${(viewPortWidth / viewPortHeight).toFixed(2)}`,
+                        relativeObjectWidth: `${viewPortWidthRelative}%`,
+                        relativeObjectHeight: `${viewPortHeightRelative}%`,
+                        relativeSpacingTop: `${spacingTopViewportRelative}%`,
+                        relativeSpacingRight: `${spacingRightViewportRelative}%`,
+                        relativeSpacingBottom: `${spacingBottomViewportRelative}%`,
+                        relativeSpacingLeft: `${spacingLeftViewportRelative}%`,
+                        absoluteSpacingTop: `${Math.round(topToViewport)}px`,
+                        absoluteSpacingRight: `${Math.round(rightToViewport)}px`,
+                        absoluteSpacingBottom: `${Math.round(bottomToViewport)}px`,
+                        absoluteSpacingLeft: `${Math.round(leftToViewport)}px`,
+                    },
+                    document: {
+                        absoluteWidth: `${DocWidth}px`,
+                        absoluteHeight: `${DocHeight}px`,
+                        aspectRatio: `1:${(DocWidth / DocHeight).toFixed(2)}`,
+                        relativeObjectWidth: `${docWidthRelative}%`,
+                        relativeObjectHeight: `${docHeightRelative}%`,
+                        relativeSpacingTop: `${spacingTopDocRelative}%`,
+                        relativeSpacingRight: `${spacingRightDocRelative}%`,
+                        relativeSpacingBottom: `${spacingBottomDocRelative}%`,
+                        relativeSpacingLeft: `${spacingLeftDocRelative}%`,
+                        absoluteSpacingTop: `${Math.round(spacingTopDocPx)}px`,
+                        absoluteSpacingRight: `${Math.round(spacingRightDocPx)}px`,
+                        absoluteSpacingBottom: `${Math.round(spacingBottomDocPx)}px`,
+                        absoluteSpacingLeft: `${Math.round(spacingLeftDocPx)}px`,
+                    }
+                };
+
+                /**------------------------------------------------------------------------
+                 * ------------------------------------------------------------------------
+                 * @description Adds the data attributes to the 
+                 * current element in the loop if the attribute 
+                 * [data-oji-attributes] is set
+                 * ------------------------------------------------------------------------
+                 ------------------------------------------------------------------------*/
+                if (checkAttributes && document.body.getAttribute('data-oji-attributes-active') === "true") {
+                    ['object', 'viewport', 'document'].forEach(section => {
+                        for (const [key, value] of Object.entries(oji[section])) {
+                            // Transform camelCase keys to kebab-case for attributes
+                            const attributeKey = camelToKebabCase(key);
+                            el.setAttribute(`data-${ojiAtt}-${section}-${attributeKey}`, value);
+                        }
+                    });
                 }
-                debugBox.innerHTML = `<code>${prettifyObjectForHTML(oji)}</code>`;
-                el.setAttribute(`data-${ojiAtt}-id`, `${randomId}-${i}`);
+                /**------------------------------------------------------------------------
+                 * ------------------------------------------------------------------------
+                 * { WORK IN PROGRESS }
+                 * @description 
+                 * Checks if the data-oji-summary is not set to false and
+                 * gets this data from the stringified JSON from transformJsonToHTMLString()
+                 * ------------------------------------------------------------------------
+                 * ------------------------------------------------------------------------*/
+                if (checkSummary !== 'false') {
+                    el.setAttribute(`data-${ojiAtt}-summary`, transformJsonToHTMLString(oji));
+                }
+
+                /**------------------------------------------------------------------------
+                 * ------------------------------------------------------------------------
+                 * @description 
+                 * Check if data-oji-debug is set and 
+                 * add the data-oji-id attribute to the current element 
+                 * in the loop and display debig overlays
+                 * ------------------------------------------------------------------------
+                 ------------------------------------------------------------------------*/
+
+                // if (checkDebug) {
+                if (document.body.getAttribute(`data-${ojiAtt}-debug-active`) === 'true') {
+
+                    if (checkDebug) {
+                        let debugBox = el.querySelector(`.${ojiAtt}-debug-container`);
+                        // document.querySelector(`[data-${ojiAtt}-debug-active]`).setAttribute(`data-${ojiAtt}-debug-active`, 'true')
+
+                        if (checkIfOjiDebugIsPresent === 'false') {
+                            debugBox.remove();
+                            return;
+                        }
+
+                        /** ------------------------------------
+                         * Check if the debug 
+                         * box already exists  
+                         ------------------------------------*/
+
+                        if (!debugBox) {
+                            debugBox = document.createElement('div');
+                            debugBox.setAttribute('class', `${ojiAtt}-debug-container`);
+                            el.appendChild(debugBox);
+                        }
+                        debugBox.innerHTML = `<code>${prettifyObjectForHTML(oji)}</code>`;
+                        el.setAttribute(`data-${ojiAtt}-id`, `${randomId}-${i}`);
+                    }
+                    // else {
+                    //     return;
+                    // }
+                }
             }
         }
     }
@@ -623,10 +646,11 @@
         window.addEventListener(event, debouncedCalculateObjectInfo)
     }
 
+
     /**------------------------------------
      * Console Message
     ------------------------------------*/
-    if (checkIfOjiDebugIPresent) {
+    if (checkIfOjiDebugIsPresent) {
         console.log(
             `oji.js is initialized and working!`
         );
@@ -654,15 +678,19 @@
                 console.log(`The ${mutation.attributeName} attribute was modified.`);
                 const attrValue = body.getAttribute(mutation.attributeName);
                 switch (mutation.attributeName) {
-                    case 'data-oji-attributes-active':
-                        attrValue === 'false' ? disableOjiAttributes() : enableOjiAttributes();
+                    case `data-${ojiAtt}-attributes-active`:
+                        attrValue === `false` ? disableOjiAttributes() : enableOjiAttributes();
                         break;
-
+                    case `data-${ojiAtt}-debug-active`:
+                        attrValue === `false` ? disableOjiDebug() : enableOjiDebug();
+                        break;
+                    case `data-${ojiAtt}-active`:
+                        attrValue === `false` ? disableOji() : enableOji();
+                        break;
                 }
             }
         }
     }
-
 
     // Function to re-enable oji attributes functionality
     function enableOjiAttributes() {
@@ -694,12 +722,111 @@
         });
     }
 
+    /**
+     * { WORK IN PROGRESS}
+     * Enable / Disable Oji Debug Gloablly
+     */
+    // Function to disable oji attributes functionality
+    /**
+ * Disable oji debug functionality globally
+ */
+    function disableOjiDebug() {
+        console.log('oji debug functionality disabled');
+        // Remove the global debug box if it exists
+        let globalDebugBox = document.querySelector('.oji-global-debug-container');
+        if (globalDebugBox) {
+            globalDebugBox.remove();
+        }
+
+        // Iterate through all elements with the data-oji-debug attribute and remove their debug containers
+        document.querySelectorAll(`[data-${ojiAtt}][data-${ojiAtt}-debug]`).forEach(el => {
+            let debugBox = el.querySelector(`.${ojiAtt}-debug-container`);
+            console.log(el);
+            el.setAttribute(`data-${ojiAtt}-debug`, `false`);
+
+            if (debugBox) {
+                debugBox.remove();
+            }
+        });
+
+        // Update the state to remember that the debug functionality is disabled
+        document.body.setAttribute(`data-${ojiAtt}-debug-active`, 'false');
+    }
+    function disableOjiDebug() {
+        console.log('oji debug functionality disabled');
+
+        // Remove the global debug box if it exists
+        let globalDebugBox = document.querySelector('.oji-global-debug-container');
+        if (globalDebugBox) {
+            globalDebugBox.remove();
+            // globalDebugBox.parentNode.remove.attribute('data-oji-debug');
+        }
+
+        // Iterate through all elements with the data-oji-debug attribute and remove their debug containers
+        document.querySelectorAll(`[data-${ojiAtt}][data-${ojiAtt}-debug]`).forEach(el => {
+            let debugBox = el.querySelector(`.${ojiAtt}-debug-container`);
+            if (debugBox) {
+                debugBox.remove();
+
+            }
+        });
+
+        // Update the state to remember that the debug functionality is disabled
+        // document.body.setAttribute(`data-${ojiAtt}-debug-active`, 'false');
+    }
+
+    /**
+     * Enable oji debug functionality globally
+     */
+    function enableOjiDebug() {
+        console.log('oji debug functionality enabled');
+        calculateObjectInfo();
+    }
+
+    /**
+     * Disable Oji all at once
+     */
+
+    function disableOji() {
+        console.log('oji functionality disabled');
+        // Remove all oji attributes from elements, except for specific ones
+        // document.querySelector(`[data-${ojiAtt}-active]`)
+        //     .setAttribute(`data-${ojiAtt}-active`, 'false');
+        document
+            .querySelectorAll(`.${ojiAtt}-debug-container, .${ojiAtt}-global-debug-container`)
+            .forEach(el => {
+                el.remove();
+            }
+            )
+        // document.querySelector(`[data-${ojiAtt}-debug-active]`).setAttribute(`[data-${ojiAtt}-debug-active]`, 'false');
+        document.querySelectorAll(`[data-${ojiAtt}]`).forEach(el => {
+            // Get all attributes of the element
+            Array.from(el.attributes).forEach(attr => {
+                // Check if the attribute starts with 'data-oji-' and is not one of the exceptions
+                if (attr.name.startsWith(`data-${ojiAtt}-`) && ![
+                    `data-${ojiAtt}-debug`,
+                    `data-${ojiAtt}-attributes`,
+                    `data-${ojiAtt}-id`
+                ].includes(attr.name)) {
+                    // Remove the attribute
+                    console.log('Removing:', attr.name);
+                    el.removeAttribute(attr.name);
+                }
+            });
+        });
+    }
+
+    function enableOji() {
+        // document.querySelector(`[data-${ojiAtt}-active]`)
+        //     .setAttribute(`data-${ojiAtt}-debug-active`, 'true');
+        calculateObjectInfo();
+    }
+
     // Create an observer instance linked to the handleAttributeChange callback function
     const observer = new MutationObserver(handleAttributeChange);
 
     // Start observing the body tag for attribute changes
     observer.observe(body, { attributes: true });
-
 
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
