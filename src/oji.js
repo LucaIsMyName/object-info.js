@@ -162,16 +162,6 @@
 
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
-     * randomId
-     * @description 
-     * A random number used to identify 
-     * the elements with the data-oji-debug 
-     * attribute.
-     * ------------------------------------------------------------------------
-    ------------------------------------------------------------------------*/
-
-    /**------------------------------------------------------------------------
-     * ------------------------------------------------------------------------
      * style
      * @description 
      * A style tag that contains the CSS 
@@ -198,17 +188,12 @@
             border:none;
             margin-block: 1rem;
         }
-
+        :where(.${ojiAtt}-global-debug-container),
         :where([data-${ojiAtt}-debug]) :where(.${ojiAtt}-debug-container) {
-            opacity: 0.66;
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            right: 0.5rem;
-            padding: 1em;
             border-radius: 0.5em;
             background-color: #ffffffb3;
             color: #000;
+            -webkit-backdrop-filter: blur(0.5em);
             backdrop-filter: blur(0.5em);
             text-shadow: 0.05em 0.05em 0.1em rgba(0,0,0,0.5);
             box-shadow: 0 0 0.1em rgba(0,0,0,0.5);
@@ -223,6 +208,15 @@
             text-shadow: 0 0 1px rgba(0,0,0, 0.33);       
             overflow:scroll;
             min-height: calc(var(--oji-max-width) / 1.5);
+            padding: 1em;
+
+        }
+        :where([data-${ojiAtt}-debug]) :where(.${ojiAtt}-debug-container) {
+            opacity: 0.66;
+            position: absolute;
+            top: 0.5rem;
+            left: 0.5rem;
+            right: 0.5rem;
             outline-color:rgb(${red}, ${green}, ${blue})
         }
 
@@ -230,25 +224,6 @@
             position: fixed;
             right: 0.5rem;
             bottom: 0.5rem;
-            padding: 1em;
-            border-radius: 0.5em;
-            background-color: #ffffffb3;
-            color: #000;
-            backdrop-filter: blur(0.5em);
-            text-shadow: 0.05em 0.05em 0.1em rgba(0,0,0,0.5);
-            box-shadow: 0 0 0.1em rgba(0,0,0,0.5);
-            max-width: min(100%, var(--oji-max-width));
-            min-width: min(100%, calc(var(--oji-max-width) / 2));
-            max-height: calc(100% - 1rem);
-            /* word-break: break-word; */
-            font-size: 0.66rem;
-            line-height: 1.25;
-            font-family: monospace;
-            z-index: 9999;
-            text-shadow: 0 0 1px rgba(0,0,0, 0.33);       
-            overflow:scroll;
-            min-height: calc(var(--oji-max-width) / 1.5);
-          
         }
 
         :where(.${ojiAtt}-global-debug-container :where(hr, p)) {
@@ -443,7 +418,7 @@
                  * and BG Colors
                  */
                 let elementStyles = window.getComputedStyle(el);
-                console.log(elementStyles);
+                // console.log(elementStyles);
                 let fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
                 let fontSizePx = fontSize;
                 let fontSizeRem = fontSize / 16;
@@ -507,7 +482,10 @@
                  ------------------------------------------------------------------------*/
                 let oji = {
                     info: {
+                        name: config.info.name,
                         id: randomId + '-' + i,
+                        attribute: config.attribute,
+                        slug: config.slug,
                     },
                     object: {
                         absoluteWidth: `${roundedWidth}px`,
@@ -619,9 +597,6 @@
                         debugBox.innerHTML = `<code>${prettifyObjectForHTML(oji)}</code>`;
                         el.setAttribute(`data-${ojiAtt}-id`, `${randomId}-${i}`);
                     }
-                    // else {
-                    //     return;
-                    // }
                 }
             }
         }
@@ -646,7 +621,6 @@
         window.addEventListener(event, debouncedCalculateObjectInfo)
     }
 
-
     /**------------------------------------
      * Console Message
     ------------------------------------*/
@@ -655,8 +629,6 @@
             `oji.js is initialized and working!`
         );
     }
-
-
 
     /**------------------------------------------------------------------------
      * oji.js calculatiuon is finished and rendered to the DOM
@@ -727,6 +699,12 @@
      * Enable / Disable Oji Debug Gloablly
      */
     // Function to disable oji attributes functionality
+
+    // Create an observer instance linked to the handleAttributeChange callback function
+    const observer = new MutationObserver(handleAttributeChange);
+
+    // Start observing the body tag for attribute changes
+    observer.observe(body, { attributes: true });
     /**
  * Disable oji debug functionality globally
  */
@@ -822,11 +800,6 @@
         calculateObjectInfo();
     }
 
-    // Create an observer instance linked to the handleAttributeChange callback function
-    const observer = new MutationObserver(handleAttributeChange);
-
-    // Start observing the body tag for attribute changes
-    observer.observe(body, { attributes: true });
 
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
