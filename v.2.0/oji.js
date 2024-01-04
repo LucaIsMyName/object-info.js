@@ -13,6 +13,24 @@
  * ------------------------------------------------------------------------
  */
 
+import {
+    oji_update,
+    oji_debounce,
+    oji_create_id,
+    oji_object_calc,
+    oji_complex_to_simple_type,
+    oji_kill,
+    oji_start,
+    oji_kill_attributes,
+    oji_start_attributes,
+    oji_kill_debug,
+    oji_start_debug
+
+} from './functions.js';
+
+import {
+    oji
+} from './config.js';
 /**
  * The software calculates 
  * certain data points and sets them as
@@ -41,6 +59,7 @@
  * an attribute should trigger a refresh)
  */
 
+
 (function () {
 
     /**
@@ -52,137 +71,13 @@
      * the localStorage object
      */
 
-    let oji = {
-        config: {
-            init: {
-                name: 'oji.js',
-                version: '0.1',
-                id: getOrCreateRandomId(),
-                // The begiing of every oji attribute
-                attribute: 'data-oji',
-                slug: 'oji',
-                lag: 0,
-                events: [
-                    'load',
-                    'resize',
-                    'scroll',
-                    'click',
-                    'focus',
-                    'blur',
-                    'mousedown',
-                    'mouseup',
-                    'touch'
-                ],
-                state: {
-                    global: true,
-                    debug: true,
-                    attributes: true,
-                    summary: true
-                }
-            },
-            // Blank Keys that retirive the 
-            // value from the localStorage Object
-            storage: {
-                // This as a 'copy' of the oji.config.init.state
-                state: {
-                    global,
-                    debug,
-                    attributes,
-                    summary,
-                }
-            }
-        },
-        // User Agent Informations
-        user: {
-            agent: navigator.userAgent,
-            os: navigator.platform,
-            lang: navigator.language || navigator.userLanguage,
-            fontSize: `${getUserAgentFontSize()}px`,
-            dimensions: {
-                abolute: {
-                    height: window.screen.height,
-                    width: window.screen.width,
-                    aspectRatio: `1:${(window.screen.width / window.screen.height).toFixed(2)}`,
-                    numberOfPixels: `${window.screen.width * window.screen.height}`
-                }
-            },
-        },
-        document: {
-            nodes: parseInt(document.getElementsByTagName('*').length),
-            lang: document.documentElement.lang || document.lang,
-            dimensions: {
-                absolute: {
-                    width: document.documentElement.scrollWidth,
-                    height: document.body.scrollHeight,
-                },
-                relative: {
-                    width,
-                    height,
-                }
-            }
-        },
-        viewport: {
-            dimensions: {
-                absolute: {
-                    width: window.innerWidth,
-                    height: window.innerHeight,
-                    area: (window.innerHeight * window.innerWidth).toFixed(0),
-
-                },
-                relative: {
-                    width,
-                    height,
-                }
-            },
-            object: {
-                absolute: {
-                    spacing: {
-                        top,
-                        right,
-                        bottom,
-                        left
-                    }
-                },
-                relative: {
-                    width,
-                    area,
-                    spacing: {
-                        top,
-                        right,
-                        bottom,
-                        left
-                    }
-                }
-            }
-        },
-        object: [
-            // Insert the elements as objects in here 
-            // that have the [data-oji] attribute set
-            // and store the these infos
-            // in the let oji and the local storage
-            {
-                meta: {
-                    id,
-                    debug,
-                    attributes,
-                    summary,
-                },
-                dimensions: {
-                    absolute: {
-                        width,
-                        height,
-                        area,
-                    },
-                }
-            }
-        ]
-    }
-
     /**
      * 2. Store this Object in a structured way 
      * into localStorage as a Cookie initially
      */
 
+    oji_update(oji);
+    
     /**
      * 3. Calc
      * Calculate the values here one for one
@@ -250,7 +145,12 @@
      *  - prettify(jsonToString)
      * -  debounce()
      * -  getContrastRatio()
+     * -  set oji key/value in oji obj and local storage
+     * - change oji key/value in oji obj and local storage
+     * - delete oji key/value in oji obj and local storage
      */
+
+
 
     /**
      * 8. Public Functions for Developers
