@@ -7,16 +7,20 @@
  * this is the initial application state
  * 
  */
+
+
+
 export let oji = {
+    _experimental: {},
     config: {
         init: {
             name: 'oji.js',
             version: '0.1',
-            id: localStorage.getItem(config.init.id) || oji_create_id(),
+            id: false,
             // The begiing of every oji attribute
             attribute: 'data-oji',
             slug: 'oji',
-            lag: localStorage.getItem(config.init.lag) || 0,
+            debounce: 0,
             events: [
                 'load',
                 'resize',
@@ -29,10 +33,10 @@ export let oji = {
                 'touch'
             ],
             state: {
-                global: localStorage.getItem(config.state.global) || document.querySelector('body').getAttribute(`${oji_init.attribute}`) || true,
-                debug: localStorage.getItem(config.state.debug) || true,
-                attributes: localStorage.getItem(config.state.attributes) || true,
-                summary: localStorage.getItem(config.state.summary) || true,
+                global: true,
+                debug: true,
+                attributes: true,
+                summary: true,
             }
         },
     },
@@ -43,7 +47,7 @@ export let oji = {
         lang: navigator.language || navigator.userLanguage,
         // fontSize: `${getUserAgentFontSize()}px`,
         dimensions: {
-            abolute: {
+            absolute: {
                 height: window.screen.height,
                 width: window.screen.width,
                 aspectRatio: `1:${(window.screen.width / window.screen.height).toFixed(2)}`,
@@ -58,7 +62,7 @@ export let oji = {
             absolute: {
                 width: document.documentElement.scrollWidth,
                 height: document.body.scrollHeight,
-                area: (docment.body.innerHeight * docment.body.innerWidth).toFixed(0),
+                area: (document.body.innerHeight * document.body.innerWidth).toFixed(0),
             },
         }
     },
@@ -71,7 +75,17 @@ export let oji = {
             },
         },
     },
-    object: [
-        {}
+    objects: [
+
     ]
 }
+
+export let oji_attribute = oji.config.init.attribute;
+export let oji_version = oji.config.init.version;
+export let oji_events = oji.config.init.events;
+export let oji_debounce = oji.config.init.debounce;
+export let oji_state = oji.config.init.state;
+export let oji_state_global = oji.config.init.state.global;
+export let oji_state_attributes = oji.config.init.state.attributes;
+export let oji_state_debug = oji.config.init.state.debug;
+

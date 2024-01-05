@@ -1,38 +1,123 @@
+import {
+    oji,
+    oji_attribute,
+    oji_events,
+    oji_state_global,
+    oji_state_attributes,
+    oji_state_debug,
+} from './config.js';
+/**
+ * @name oji_complex_to_simple_type
+ * @param {string} key 
+ * @param {string, number} value 
+ * @returns 
+ */
 
 
 export function oji_complex_to_simple_type(key, value) {
-    // Modify this function to handle other complex types as needed
+    // Check for a function and execute it
     if (typeof value === 'function') {
-        return value.name; // Or whatever you decide to store for functions
-    } else if (value instanceof Element) {
-        return value.tagName; // Simplification for DOM elements
+        try {
+            // Attempt to invoke the function and return its result
+            return value();
+        } catch (error) {
+            // If the function requires parameters or throws an error, handle it here
+            console.error("Error executing function: ", error);
+            return "Function execution error";
+        }
     }
+    else if (value instanceof Element) {
+        // Return the actual HTML of the element
+        return value.outerHTML;
+    }
+    // Return the value for other types as-is
     return value;
 }
+
 /**
  * 
- * @param {object} oji_complex_to_simple_type 
+ * @param {object} updated_props
+ * @description
+ * this function should handle the updates
+ * of oji local storage cookie
  */
 export function oji_update(updated_props) {
-    // Calc all Objects
-    oji_object_calc();
+    // Ensure updated_props is an object
+    if (typeof updated_props !== 'object' || updated_props === null) {
+        console.error('updated_props must be an object');
+        return;
+    }
+
+    // if (!oji) {
+    //     let oji = {};
+    // }
     // Ensure oji is already defined and is an object
-    if (typeof oji !== 'object') {
+    if (typeof oji !== 'object' || oji === null) {
         oji = {};
     }
 
-    // Update the oji object with the new properties
-    for (const key in updated_props) {
-        if (updated_props.hasOwnProperty(key)) {
+    // Update the oji object with the new properties if they've changed
+    Object.keys(updated_props).forEach(key => {
+        if (!oji.hasOwnProperty(key) || oji[key] !== updated_props[key]) {
             oji[key] = updated_props[key];
         }
+    });
+
+    // Serialize and store updated object
+    try {
+        let oji_string = JSON.stringify(oji, oji_complex_to_simple_type);
+        localStorage.setItem('oji', oji_string);
+    } catch (error) {
+        console.error("Error updating localStorage: ", error);
     }
+}
 
-    // Serialize the updated object into a string
-    let oji_string = JSON.stringify(oji, oji_complex_to_simple_type);
+/**
+ * 
+ * @param {Array} oji_elements 
+ * @returns {}
+ */
 
-    // Store it in localStorage
-    localStorage.setItem('oji', oji_string);
+export function oji_update_all_attributes(oji_elements = document.querySelectorAll(`[data-oji]`)) {
+    for (i = 0; i < oji_elements.length; i++) {
+        let obj = oji_elements[i];
+        for (
+
+            attribute = 0;
+            attribute < oji.objects.length;
+            attribute++) {
+            let key = oji.objects[i][attribute.key];
+            let value = oji.objects[i][attribute.value];
+
+            obj.setAttribute(
+                `${localStorage.getItem(oji.objects[attribute].key)}`,
+                `${localStorage.getItem(oji.objects[attribute].value)}`
+            )
+        }
+    }
+}
+
+/**
+ * 
+ * @param {Element} oji_element 
+ */
+
+export function oji_update_object_attributes(oji_element = document.querySelector(`[data-oji]`)) {
+    console.log(oji_element);
+
+    for (
+        attributes = 0;
+        attributes < oji_element.length;
+        attributes++
+    ) {
+        let key = oji.objects[i][attributesey];
+        let value = oji.objects[i][attribute.key];
+
+        obj.setAttribute(
+            `${localStorage.getItem(oji.objects[attributes].key)}`,
+            `${localStorage.getItem(oji.objects[i].value)}`
+        )
+    }
 }
 
 /**
@@ -63,85 +148,138 @@ export function oji_debounce(f, t) {
  * calculates all data-oji items from scratch if
  * no parameter is given
  */
+export function oji_object_calc(index = 0, objects) {
+    // Return if the last item of the array
 
-export function oji_object_calc(objects = config.objects) {
-    /*
-    each iteration of the loop should
-    create a oji.object.array id can 
-    later place on the element in the 
-    html attributes ection or insert in 
-    the DOM as visle cntainer for debugging
-
-    these arrays should be stored in the 
-    oji.objects keyword (all of them)
-
-    I'm trying to use a
-    function programming 
-    approch to this loop
-    */
-
-    /**
-     * 
-     * @param {array} objects 
-     * @returns {object} 
-     */
-
-    function oji_calc_elements(index = 0, objects) {
-        // Return if the last item of the array
-        // was iterated through
-        if (index <= array.lenght) {
-            return
+    // Set an upper limit for DOM Elemnts for performance reasons
+    let array = () => {
+        if (objects.lenght <= 1000) {
+            console.log('Number of oji Elements limited to 1000')
+            array = 1000
+        } else {
+            array = objects.lenght
         }
+    }
+    // was iterated through
+    if (index <= array.lenght) {
+        return
+    }
+    let obj = objects[index];
+    let style = window.getComputedStyle(obj);
 
-
-        let array = () => {
-            if (objects.lenght <= 1000) {
-                console.log('Number of oji Elements limited to 1000')
-                array = 1000
-            } else {
-                array = objects.lenght
-            }
-        }
-        let obj = objects[i];
-        let style = window.getComputedStyle(obj);
-
-        oji.objects.obj.push(
+    oji.objects[index] = () => {
+        push(
             {
                 meta: {
                     id: `${oji.config.id}-${index}`,
                 },
-                dimnensions: {
+                dimensions: {
                     absolute: {
                         width: `${style.width}`,
+                        height: `${style.height}`,
+                        aspectRatio: `1:${parseFloat((style.width / style.height).toFixed(2))}`,
+                    },
+                    viewport: {
+                        absolute: {
+                            spacing: {
+                                top: (obj.getBoundingClientRect().top),
+                                right: (window.innerWidth - obj.getBoundingClientRect().right),
+                                bottom: (window.innerHeight - obj.getBoundingClientRect().bottom),
+                                left: (obj.getBoundingClientRect().left),
+                            }
+                        },
+                        relative: {
+                            spacing: {
+                                top: (100 / window.innerHeight * obj.getBoundingClientRect().top),
+                                right: (100 / window.innerWidth * obj.getBoundingClientRect().right),
+                                bottom: (100 / window.innerHeight * obj.getBoundingClientRect().bottom),
+                                left: (100 / window.innerWidth * obj.getBoundingClientRect().left),
+                            },
+                            // The area of the Element Relative to the Viewport in Percentage
+                            area: ((window.innerHeight * window.innerWidth) - (style.width * style.height)),
+                            // Calc the Area of the Element Visible in the Viewport right now
+                            areaVisible: null
+                        }
+                    },
+                    document: {
+                        absolute: {
+                            spacing: {
+                                top: (obj.getBoundingClientRect().top),
+                                right: (window.innerWidth - obj.getBoundingClientRect().right),
+                                bottom: (window.innerHeight - obj.getBoundingClientRect().bottom),
+                                left: (obj.getBoundingClientRect().left),
+                            }
+                        },
+                        relative: {
+                            spacing: {
+                                top: null,
+                                right: null,
+                                bottom: null,
+                                left: null
+                            },
+                            // The area of the Element Relative to the Document in Percentage
+                            area: null,
+                            // The area of the Element Relative Visibility in the Document in Percentage
+                            areaVisible: null
+                        }
                     }
                 }
             }
         )
-        /**
-        * Use the Oji Update Function
-        * to write to the Local Storage
-        */
-        // oji_update(oji.objects[i]);
+    }
+    /**
+    * Use the Oji Update Function
+    * to write to the Local Storage
+    */
+    // oji_update(oji.objects[i]);
 
-        /* 
-        Loop through the 
-        Function again until the 
-        end of the array is
-        reached 
-         */
-        oji_calc_elements(i++)
+    /* 
+    Loop through the 
+    Function again until the 
+    end of the array is
+    reached 
+     */
+    oji_calc_elements(i++)
+}
+
+/**
+ * 
+ * @param {Array} objects 
+ * @param {string} events 
+ * @param {Function} f 
+ */
+
+export function oji_event_listeners(
+    objects = document.querySelectorAll(`[${oji_attribute}]`),
+    events = oji.config.init.events,
+    f) {
+    /*
+    Function to add Event Listeners to 
+    */
+
+    for (o = 0; o <= objects.lenght; o++) {
+        let obj = objects[o];
+
+        for (e = 0; e <= events.lenght; e++) {
+            let event = events[e];
+            obj.addEventListener(event, f)
+        }
     }
 
 }
 
-export function oji_set_attributes(objects = config.objects) {
+export function oji_set_attributes(
+    objects = oji.objects
+) {
     // Retrieve the Values from 
     // local storage and set them
     // the html attributes of
     // data-oji element
 }
 
-export function oji_set_debug(objects = config.objects) {
+export function oji_set_debug(
+    objects = oji.objects
+) {
     // Retrieve the Values from 
     // local storage and set them
     // the debug containers of
@@ -156,25 +294,29 @@ export function oji_set_debug(objects = config.objects) {
     WHAT THE SPECIFIC ELEMENT HAS SET 
  ----------------------------------*/
 
-export function oji_kill() {
+export function oji_kill(
+    objects = oji.objects
+) {
     // Kill all oji functionality
     // by using this function if the
     // <body data-oji-active="false">
     // is set to false by user input
     // or if the developer hardcodes it
     // into the html
-    console.log(`Oji Disabled`)
+    console.log(`Oji Globally Disabled`)
 }
-export function oji_start() {
+export function oji_start(
+    objects = oji.objects
+) {
     // Kill all oji functionality
     // by using this function if the
     // <body data-oji-active="false">
     // is set to false by user input
     // or if the developer hardcodes it
     // into the html
-    console.log(`Oji Enabled`)
+    console.log(`Oji Globally Enabled`)
 }
-export function oji_kill_attributes() {
+export function oji_kill_attributes(objects = oji.objects) {
     // Enable all data-oji-attriobutes functionality
     // to the applications default state
     // by using this function if the
@@ -182,20 +324,20 @@ export function oji_kill_attributes() {
     // is set to false by user input
     // or if the developer hardcodes it
     // into the html
-    console.log(`Oji Enabled`)
+    console.log(`Oji Attributes Globaly Disabled`)
 
 }
-export function oji_start_attributes() {
+export function oji_start_attributes(objects = oji.objects) {
     // Kill all oji functionality
     // by using this function if the
     // <body data-oji-active="false">
     // is set to false by user input
     // or if the developer hardcodes it
     // into the html
-    console.log(`Oji Attributes Enabled`)
+    console.log(`Oji Attributes Globally Enabled`)
 }
 
-export function oji_kill_debug() {
+export function oji_kill_debug(objects = oji.objects) {
     // Kill all oji Debug functionality
     // of the DOM 
     // by using this function if the
@@ -207,7 +349,7 @@ export function oji_kill_debug() {
     console.log(`Oji Attributes Disabled`)
 }
 
-export function oji_start_debug() {
+export function oji_start_debug(objects = oji.objects) {
     // Start all oji Debug functionality
     // of the DOM 
     // by using this function if the
@@ -229,7 +371,6 @@ export function oji_create_id() {
     console.log(oji_id);
     return oji_id;
 }
-
 
 /*----------------------------------
     STRING TRANSFORMATIONS
