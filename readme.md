@@ -38,7 +38,7 @@
 2. **Enabling Debug Visuals:**
    - Use the `data-oji-debug` attribute on the desired elements to initiate a visual overlay, displaying an extensive set of metrics for in-depth analysis.
 3. **Animating and Styling:**
-   - Apply the `data-oji-style-attributes` and `data-oji-attributes` to elements, and `oji.js` will assign computed metrics as HTML attributes. These can serve as hooks for further scripting or styling, allowing you to create responsive behaviors based on the element's metrics. (like triggering animations or interaction on certain viewport or document relatied positions)
+   - Apply the  `data-oji-attributes` to elements, and `oji.js` will assign computed metrics as HTML attributes. These can serve as hooks for further scripting or styling, allowing you to create responsive behaviors based on the element's metrics. (like triggering animations or interaction on certain viewport or document relatied positions)
 
 ## Data Points
 
@@ -47,24 +47,40 @@ oji can appyl the following informations about any given HTML Element:
 ```js
    {
       object: {
+         // the absolute width
          absoluteWidth: `${integer}px`,
+         // the absolute height
          absoluteHeight: `${integer}px`,
+         // the aspect-ratio
          aspectRatio: `1:${float}`,
-         viewportAreaPercentagle: `${float}%`,
+         // the percentage of the area of the element of the current viewport
+         viewportAreaPercentage: `${float}%`,
+         // the percentage of the area of the element visible within the current viewport
          viewportAreaVisible: `${float}%`,
+         // the percentage of the area of the element of the document
          documentAreaPercentage: `${float}%`,
+         // the percentage of the area  of the element visible of the document
          documentAreaVisible: `${float}%`,
+         // the font-size in px
          fontSizePx: `${float}px`,
+         // the font-size in rem
          fontSizeRem: `${float}rem`,
+         // the font-size in the current Vw
          fontSizeVw: `${float}vw`,
+         // the font-family
          fontSizeFamily: `${string}`,
+         // the text-color of the element
          color: `${string}`,
+         // the background-color of the element
          backgroundColor: `${string}`,
+         // the contrast-ratio bewtween text/background
          colorContrast: `${float}`,
+          // the absolute width
+         absoluteWidth: `${integer}px`,
+          // the absolute height
+         absoluteHeight: `${integer}px`,
       },
       viewport: {
-         absoluteWidth: `${integer}px`,
-         absoluteHeight: `${integer}px`,
          aspectRatio: `${integer}px`,
          relativeObjectWidth: `${integer}%`,
          relativeObjectHeight: `${integer}%`,

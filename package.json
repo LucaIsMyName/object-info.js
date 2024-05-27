@@ -1,0 +1,17 @@
+{
+  "name": "oji.js",
+  "version": "1.0.0",
+  "description": "`oji.js`(oji = object-info) is a JavaScript snippet that equips developers and designers with detailed data attributes about HTML elements' size, position, and relative metrics to the viewport and document.",
+  "main": "src/oji.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "dom",
+    "positioning",
+    "styling",
+    "animations"
+  ],
+  "author": "LucaIsMyName",
+  "license": "ISC"
+}

@@ -14,6 +14,41 @@
  */
 
 (function () {
+    /**
+     * @name getLuminance
+     * @param {array} rgb 
+     * @returns {float}
+     */
+    function getLuminance(rgb = [128, 128, 128]) {
+        let a = rgb.map(function (v) {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+    }
+
+    /**
+     * @name getContrastRatio
+     * @param {string} color1 
+     * @param {string} color2 
+     * @returns {number} contrastRatio
+     */
+    function getContrastRatio(color1, color2) {
+        let luminance1 = getLuminance(color1);
+        let luminance2 = getLuminance(color2);
+        let brightest = Math.max(luminance1, luminance2);
+        let darkest = Math.min(luminance1, luminance2);
+        return (brightest + 0.05) / (darkest + 0.05);
+    }
+
+    function parseColor(color) {
+        if (color === 'transparent' || color === 'none') {
+            color = 'rgb(255, 255, 255)'; // Default to white if transparent or none
+        }
+        let rgb = color.match(/\d+/g).map(Number);
+        return rgb;
+    }
+
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
      * @description
@@ -429,7 +464,15 @@
                 let rgbColor = parseColor(color);
                 let rgbBackgroundColor = parseColor(backgroundColor);
                 let colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
+                // Check and set background color
+                if (backgroundColor === 'transparent' || backgroundColor === 'none') {
+                    backgroundColor = 'white';
+                }
 
+                // Check and set text color
+                if (color === 'transparent' || color === 'none') {
+                    color = 'white';
+                }
                 /**
                  * Calc the Area of an Element
                  */
@@ -849,51 +892,6 @@
     }
 
     /**------------------------------------
-     * Get Color Contrast Ratio Functions
-     * https://www.w3.org/WAI/GL/wiki/Contrast_ratio
-     ------------------------------------*/
-    /**
-     * @name getLuminance
-     * @param {array} rgb 
-     * @returns {float}
-     */
-    function getLuminance(rgb = [128, 128, 128]) {
-        let a = [rgb.r, rgb.g, rgb.b].map(function (v) {
-            v /= 255;
-            // console.log(v);
-            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
-        });
-        return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
-    }
-    /**
-     * @name getContrastRatio
-     * @param {string} color1 
-     * @param {string} color2 
-     * @returns {number} contrastRatio
-     */
-    function getContrastRatio(color1, color2) {
-        let luminance1 = getLuminance(color1);
-        let luminance2 = getLuminance(color2);
-        let brightest = Math.max(luminance1, luminance2);
-        let darkest = Math.min(luminance1, luminance2);
-        return (brightest + 0.05) / (darkest + 0.05);
-    }
-
-    /**
-     * @name parseColor
-     * @param {string} inputColor 
-     * @returns 
-     */
-    function parseColor(inputColor) {
-        let div = document.createElement('div');
-        div.style.color = inputColor;
-        document.body.appendChild(div);
-        let m = getComputedStyle(div).color.match(/^rgb\s*\(\s*(\d+),\s*(\d+),\s*(\d+)\s*\)$/);
-        document.body.removeChild(div);
-        return m ? { r: m[1], g: m[2], b: m[3] } : null;
-    }
-
-    /**------------------------------------
      * Make Objects HTML and 
      * Pretittified Text Strings
     ------------------------------------ */
@@ -961,5 +959,5 @@
         console.log('Default font size:', userAgentFontSize);
         return userAgentFontSize;
     }
-
+   
 })();
