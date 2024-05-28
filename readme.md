@@ -46,6 +46,12 @@ oji can appyl the following informations about any given HTML Element:
 
 ```js
    {
+      info: {
+         name: 'oji',
+         id: 1234-0,
+         attribute:'data-oji',
+         slug:'oji',
+      }
       object: {
          // the absolute width
          absoluteWidth: `${integer}px`,

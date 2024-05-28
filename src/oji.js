@@ -13,6 +13,8 @@
  * ------------------------------------------------------------------------
  */
 
+let getOji = { info: {}, elements: {} };
+
 (function () {
     /**
      * @name getLuminance
@@ -99,10 +101,12 @@
             'touch'
         ],
     };
+    getOji.info = config;
 
     function getOrCreateRandomId() {
         randomId = Math.floor(Math.random() * 9999);
     }
+
 
     const ojiName = config.info.name;
     const ojiAtt = config.attribute;
@@ -184,6 +188,9 @@
         document.body.appendChild(debugGlobalContainer);
         console.log(`Element found in the DOM that has the [data-${ojiAtt}-debug] attribute set.`);
     }
+
+
+
     /**------------------------------------
      * @name red-green-blue
      * @description 
@@ -292,14 +299,13 @@
     function calculateObjectInfo() {
         if (document.body.getAttribute(`data-${ojiAtt}-active`) === 'true') {
 
-
             /**
              * elements
              * @description 
              * An array of all elements with the 
              * [data-oji] attribute.
              */
-            var elements = document.querySelectorAll(`[data-${ojiAtt}]`);
+            let elements = document.querySelectorAll(`[data-${ojiAtt}]`);
 
             /**
              * @description 
@@ -523,6 +529,10 @@
                  * there in the UI
                  * ------------------------------------------------------------------------
                  ------------------------------------------------------------------------*/
+                //  const id = el.getAttribute(`data-${ojiAtt}-id`) || `oji-${Math.random().toString(36).substr(2, 9)}`;
+                //  el.setAttribute(`data-${ojiAtt}-id`, id);
+                //  updateOjiObject(el, id, i);
+
                 let oji = {
                     info: {
                         name: config.info.name,
@@ -577,6 +587,8 @@
                         absoluteSpacingToObjectLeft: `${Math.round(spacingLeftDocPx)}px`,
                     }
                 };
+
+                getOji.elements[parseInt(i)] = oji;
 
                 /**------------------------------------------------------------------------
                  * ------------------------------------------------------------------------
@@ -639,10 +651,14 @@
                         }
                         debugBox.innerHTML = `<code>${prettifyObjectForHTML(oji)}</code>`;
                         el.setAttribute(`data-${ojiAtt}-id`, `${randomId}-${i}`);
+
+
                     }
                 }
             }
         }
+
+        return getOji;
     }
     /**------------------------------------------------------------------------
      * ------------------------------------------------------------------------
@@ -661,9 +677,9 @@
 
     for (var i = 0; i < config.events.length; i++) {
         let event = config.events[i];
-        window.addEventListener(event, debouncedCalculateObjectInfo)
-    }
+        window.addEventListener(event, debouncedCalculateObjectInfo);
 
+    }
     /**------------------------------------
      * Console Message
     ------------------------------------*/
@@ -959,5 +975,7 @@
         console.log('Default font size:', userAgentFontSize);
         return userAgentFontSize;
     }
-   
+
 })();
+
+window.oji = getOji;
