@@ -42,7 +42,7 @@
 
 ## Data Points
 
-oji can appyl the following informations about any given HTML Element:
+`oji` is globally available as object and as html attributes
 
 ```js
    {
@@ -60,13 +60,13 @@ oji can appyl the following informations about any given HTML Element:
          // the aspect-ratio
          aspectRatio: `1:${float}`,
          // the percentage of the area of the element of the current viewport
-         viewportAreaPercentage: `${float}%`,
+         relativeAreaOfViewport: `${float}%`,
          // the percentage of the area of the element visible within the current viewport
-         viewportAreaVisible: `${float}%`,
+         relativeAreaInViewportVisible: `${float}%`,
          // the percentage of the area of the element of the document
-         documentAreaPercentage: `${float}%`,
+         relativeAreaOfDocument: `${float}%`,
          // the percentage of the area  of the element visible of the document
-         documentAreaVisible: `${float}%`,
+         relativeAreaInDocumentVisible: `${float}%`,
          // the font-size in px
          fontSizePx: `${float}px`,
          // the font-size in rem
@@ -81,16 +81,20 @@ oji can appyl the following informations about any given HTML Element:
          backgroundColor: `${string}`,
          // the contrast-ratio bewtween text/background
          colorContrast: `${float}`,
-          // the absolute width
-         absoluteWidth: `${integer}px`,
-          // the absolute height
-         absoluteHeight: `${integer}px`,
       },
       viewport: {
-         aspectRatio: `${integer}px`,
+         absoluteWidth: `${integer}px`,
+         absoluteHeight: `${integer}px`,
+         aspectRatio: `1:${float}`,
          relativeObjectWidth: `${integer}%`,
          relativeObjectHeight: `${integer}%`,
-         ...
+         relativeSpacingToObjectRight: `${integer}%`,
+         relativeSpacingToObjectBottom: `${integer}%`,
+         relativeSpacingToObjectLeft: `${integer}%`,
+         absoluteSpacingToObjectTop: `${integer}px`,
+         absoluteSpacingToObjectRight: `${integer}px`,
+         absoluteSpacingToObjectBottom: `${integer}px`,
+         absoluteSpacingToObjectLeft: `${integer}px`,
       },
       document: {
          absoluteWidth: `${integer}px`,
@@ -98,7 +102,14 @@ oji can appyl the following informations about any given HTML Element:
          aspectRatio: `${integer}px`,
          relativeObjectWidth: `${integer}%`,
          relativeObjectHeight: `${integer}%`,
-         ...
+         relativeSpacingToObjectTop: `${integer}%`,
+         relativeSpacingToObjectRight: `${integer}%`,
+         relativeSpacingToObjectBottom: `${integer}%`,
+         relativeSpacingToObjectLeft: `${integer}%`,
+         absoluteSpacingToObjectTop: `${integer}px`,
+         absoluteSpacingToObjectRight: `${integer}px`,
+         absoluteSpacingToObjectBottom: `${integer}px`,
+         absoluteSpacingToObjectLeft: `${integer}px`,
       }
    }
 ```
