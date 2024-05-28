@@ -602,9 +602,15 @@ let getOji = { info: {}, elements: {} };
                         for (const [key, value] of Object.entries(oji[section])) {
                             // Transform camelCase keys to kebab-case for attributes
                             const attributeKey = camelToKebabCase(key);
-                            el.setAttribute(`data-${ojiAtt}-${section}-${attributeKey}`, value);
+                            el.setAttribute(
+                                `data-${ojiAtt}-${section}-${attributeKey}`,
+                                sanitizeValue(value)
+                            );
                         }
                     });
+                }
+                function sanitizeValue(value) {
+                    return value.replace('px', '').replace('%', '');
                 }
                 /**------------------------------------------------------------------------
                  * ------------------------------------------------------------------------
