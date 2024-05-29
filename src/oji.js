@@ -693,7 +693,7 @@ let getOji = { global: {}, elements: {} };
             short: 'oji',
             long: 'object-info',
         },
-        debounce: 1000,
+        debounce: parseInt(document.body.getAttribute('data-oji-debounce')) || 1000,
         user: {
             agent: navigator.userAgent,
             os: navigator.platform,
@@ -717,8 +717,8 @@ let getOji = { global: {}, elements: {} };
             'resize',
             'scroll',
             'click',
-            'focus',
-            'blur',
+            // 'focus',
+            // 'blur',
             'mousedown',
             'mouseup',
             'touch'
