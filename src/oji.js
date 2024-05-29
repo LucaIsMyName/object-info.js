@@ -693,7 +693,7 @@ let getOji = { global: {}, elements: {} };
             short: 'oji',
             long: 'object-info',
         },
-        // debounce: 1000,
+        debounce: 1000,
         user: {
             agent: navigator.userAgent,
             os: navigator.platform,
