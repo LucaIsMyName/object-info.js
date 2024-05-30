@@ -1282,7 +1282,6 @@ getOji.add = ojiAdd;
 function ojiRemove(elementSelector) {
     let elements = document.querySelectorAll(elementSelector);
     elements.forEach(el => {
-        // Remove attributes starting with 'data-oji'
         Array.from(el.attributes).forEach(attr => {
             if (attr.name.startsWith('data-oji')) {
                 el.removeAttribute(attr.name);
