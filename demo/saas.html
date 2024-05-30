@@ -9,7 +9,7 @@
 
 </head>
 
-<body data-oji-active data-oji-debounce="250">
+<body data-oji-active data-oji-debounce="10">
   <section class="hero" data-oji-debug data-oji data-oji-attributes>
     <div class="inner-wrapper">
       <h1>My Headline</h1>
@@ -17,6 +17,9 @@
         iure iste, illo in magnam eius. Et maiores, nemo reprehenderit cupiditate saepe eum sint!</p>
     </div>
   </section>
+  <main style="height:90vh; background:grey">
+    <button data-add-oji>Add Oji to Main</button><br>
+  </main>
   <section class="usp">
     <div class="column-1" data-oji-debug data-oji data-oji-attributes>
       <h2>The ultimate Stack</h2>
@@ -25,7 +28,7 @@
         rem neque repudiandae officia laboriosam aperiam quos atque aliquam numquam sunt, deserunt nemo consectetur?
       </p>
     </div>
-    <div class="column-2" data-oji-debug data-oji data-oji-attributes>
+    <div class="column-2">
       <figure>
         <img src="https://via.placeholder.com/300" alt="placeholder">
       </figure>
@@ -35,9 +38,47 @@
   <script src="../src/oji.js" defer></script>
   <script defer>
     document.addEventListener("DOMContentLoaded", () => {
-      console.log('Area Size: ' + oji.compare('.column-1', '.column-2').area.smaller);
-      console.log('Has Overlap: ' + oji.compare('.column-1', '.column-2').area.hasOverlap);
+      console.log('Area Size: ' + oji.compare('.column-1', '.column-2').area);
+      console.log('Has Overlap: ' + oji.compare('main', '.column-2').area.hasOverlap);
+      oji.compare('.hero', '.column-2').area.hasOverlap ? console.log('Overlap') : console.log('No Overlap');
     });
+    document.addEventListener("scroll", () => {
+      // oji.add('main');
+      console.log('Area Size: ' + oji.compare('.column-1', '.column-2').area);
+      console.log('Has Overlap: ' + oji.compare('.hero', '.column-2').overlap);
+      oji.calculate('.column-2');
+      let transformEl = document.querySelector('.column-2');
+      transformEl
+        .setAttribute(
+          'style',
+          `transform: translateX(${parseFloat(
+            transformEl.getAttribute(
+              'data-oji-object-relative-area-in-viewport-visible'
+            )
+          )
+          }px)`
+        );
+    });
+
+    let main = document.querySelector('main');
+
+    let buttonAdd = document.querySelector('[data-add-oji]');
+    buttonAdd.addEventListener('mousedown', () => {
+      oji.add('main', true, true);
+      buttonAdd.removeAttribute('data-add-oji');
+      buttonAdd.setAttribute('data-remove-oji', '');
+      buttonAdd.innerHTML = 'Remove Oji from Main'
+
+
+    });
+
+    let buttonRemove = document.querySelector('[data-remove-oji]');
+    buttonRemove.addEventListener('mousedown', () => {
+      oji.remove('main');
+      buttonRemove.removeAttribute('data-remove-oji');
+      buttonRemove.setAttribute('data-add-oji', '');
+    });
+
   </script>
 </body>
 

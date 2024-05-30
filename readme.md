@@ -141,24 +141,66 @@
    }
 ```
 
-## JavaScript API
+## Interact with `oji`
+
+### JavaScript API
 
 ```js
+/**
+ * Get the absolute spacing from the top edge of the Element to the top Edge of the Viewport
+ */
 oji.viewportPosition('.myElement').absoluteSpacingToObjectTop;
+/**
+ * Get the relative object width comapred to the document width
+ */
 oji.documentPostion('.myElement').relativeObjectWidth;
+/**
+ * Get the absolute object width
+ */
 oji.values('.myElement').absoluteWidth;
+/**
+ * returns `true` id the Elements Overlap each other
+ */
 oji.compare('.myElement', '.someOtherElement').area.hasOverlap;
+
+/**
+ * Add `oji` to the <main> Element
+ * `oji` knows if this is a single element 
+ * or more than 1 and applies them to one
+ * or all.
+ */
+let main = document.querySelector('main');
+let button = document.querySelector('[data-addOjiToMain]');
+button.addEventListener('click', () => {
+   oji.add(
+      /** 
+       * The HTML-Selector (`querySelectorAll`) you want to add `oji` to 
+       */
+      'main', 
+      /** 
+       * if `true` -> adds attributes to the Element(s) 
+       */
+      true, 
+      /** 
+       * if `true` -> adds debg Box to the Element(s) 
+       */
+      true
+   );
+});
 ```
 
-## DOM Manipulation Examples
+### HTML API
 
-`oji`can be used for triggering and handling animations with JS or CSS.
+`oji`can be used for triggering and handling animations with JS or CSS via watching changes in the oji attributes and changes the DOM accordingly.
+
+Down below are 2 examples how animations can be triggerd by obersercing the `data-oji-object-relative-area-in-viewport-visible` attribute.
+
 
 ```html
 <script>
 /*
 There is an element with the data-animate-on-scroll attribute
-it has also a data-oji-object-relative-area-in-viewport-visible attribute
+it has also a `data-oji-object-relative-area-in-viewport-visible` attribute
 if this attribute value (float with 2 decimal numbers) reaches 50.00 or more
 set class to "sky", 75.00 or more to 'yellow', under 50.00 to "blue"
 */
@@ -192,22 +234,40 @@ document.addEventListener("scroll", (e) => {
 * if there is 99.99 or less turn the the viewporta rea percentage the same as the opacity
 */
 
-document.addEventListener("scroll", (e) => {
-   const elements = document.querySelectorAll('[data-animate-on-scrolljack]');
-   const ojiAreaAttribute = 'data-oji-object-relative-area-in-viewport-visible';
+
+
+let scrolljackElements = "[data-animate-on-scrolljack]";
+let scrolljackTrigger = 'data-oji-object-relative-area-in-viewport-visible';
+
+function animateScrolljack(el, trigger) {
+   const elements = document.querySelectorAll(el);
+   const ojiAreaAttribute = trigger;
    elements.forEach(el => {
-      const visibility = parseFloat(el.getAttribute(ojiAreaAttribute));
-      el.style.opacity = (visibility / 100).toFixed(2);
-      el.style.transition = 'all 0.6s ease';
-      el.style.transform = `scale(calc(${(visibility / 100).toFixed(2)}))`;
-      if (visibility === 100.00) {
-         el.style.backgroundColor = 'yellow';
-      }
-      if (visibility !== 100.00) {
-         el.style.backgroundColor = 'transparent';
-      }
+         const visibility = parseFloat(el.getAttribute(ojiAreaAttribute));
+         el.style.opacity = (visibility / 100).toFixed(2);
+         el.style.transform = `scale(calc(${(visibility / 100).toFixed(2)}))`;
+         if (visibility === 100.00) {
+            el.style.backgroundColor = 'yellow';
+         }
+         if (visibility !== 100.00) {
+            el.style.backgroundColor = 'transparent';
+         }
    });
+}
+
+document.addEventListener("DOMContentLoaded", (e) => {
+   animateScrolljack(
+         scrolljackElements,
+         scrolljackTrigger
+   );
 });
+
+document.addEventListener("scroll", (e) => {
+         animateScrolljack(
+            scrolljackElements,
+            scrolljackTrigger
+         );
+   });
 </script>
 ```
 
@@ -219,3 +279,7 @@ document.addEventListener("scroll", (e) => {
 - Troubleshooting
   - Not Working: Confirm that the script is correctly loaded and that elements have the appropriate attributes set.
   - Inaccurate Metrics: Inspect the console for errors and check that your page's CSS and JavaScript aren't interfering with `oji.js`'s` functionality.
+
+## Bugs
+
+- Currently nested `oji` element don't work

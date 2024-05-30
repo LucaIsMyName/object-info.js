@@ -13,35 +13,15 @@
  * ------------------------------------------------------------------------
  */
 
-let getOji = { global: {}, elements: {} };
+let getOji = { global: {}, elements: {}, finished: function () { } };
+
+
 
 (function () {
 
     /**-------------------------------------------------- 
      * INTERNAL FUNCTIONS
      * --------------------------------------------------*/
-
-    /**
-     * @name debounce
-     * @description A function that delays the execution of the input function until after a specified wait time has elapsed since the last time it was invoked.
-     * @param {Function} func - The function to debounce.
-     * @param {number} wait - The number of milliseconds to delay.
-     * @returns {Function}
-     * 
-     */
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction() {
-            let context = this;
-            let args = arguments;
-            let later = function () {
-                timeout = null;
-                func.apply(context, args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    };
 
     /**
      * @name camelToKebabCase
@@ -202,10 +182,15 @@ let getOji = { global: {}, elements: {} };
      * attributes to each element.
      */
     function enableOjiAttributes() {
+
         // console.log('oji attributes functionality enabled');
         // body.setAttribute(`data-${ojiAtt}-attributes-active`, 'true'); 
-        // If you have a function that originally calculates and applies the oji attributes, call it here.
-        // This would re-calculate and apply all the necessary attributes to each element.
+
+        /** 
+         * If you have a function that originally calculates 
+         * and applies the oji attributes, call it here.
+         * This would re-calculate and apply all the 
+         * necessary attributes to each element.*/
         calculateObjectInfo();  // Assuming this is your initial function that applies oji attributes.
     }
 
@@ -222,14 +207,22 @@ let getOji = { global: {}, elements: {} };
         document.querySelectorAll(`[data-${ojiAtt}]`).forEach(el => {
             // Get all attributes of the element
             Array.from(el.attributes).forEach(attr => {
-                // Check if the attribute starts with 'data-oji-' and is not one of the exceptions
+                /**
+                 *  Check if the attribute starts 
+                 * with `data-oji-` and is not one
+                 * of the exceptions 
+                 */
                 if (attr.name.startsWith(`data-${ojiAtt}-`) && ![
                     `data-${ojiAtt}-debug`,
                     `data-${ojiAtt}-summary`,
                     `data-${ojiAtt}-attributes`,
                     `data-${ojiAtt}-id`
                 ].includes(attr.name)) {
-                    // Remove the attribute
+
+                    /** 
+                     * Remove the attribute
+                     */
+
                     // console.log('Removing:', attr.name);
                     el.removeAttribute(attr.name);
                 }
@@ -329,20 +322,20 @@ let getOji = { global: {}, elements: {} };
              */
             for (var i = 0; i < elements.length; i++) {
                 let initialOji = getOji;
-                /**------------------------------------
+                /**
                  * @name el
                  * @description The current element 
                  * in the loop.
-                 ------------------------------------*/
+                 */
                 let el = elements[i];
 
-                /**------------------------------------
+                /**
                  * @description
                  * Conditional checks for attributes 
                  * - [oji-attributes]
                  * - [oji-debug]
                  * - [oji-styles]
-                 ------------------------------------*/
+                 */
 
                 let checkAttributes = el.hasAttribute(`data-${ojiAtt}-attributes`) || el.hasAttribute(`data-${config.slug.long}-attributes`) || el.hasAttribute(`data-${config.slug.short}-attributes`);
                 let checkDebug = el.hasAttribute(`data-${ojiAtt}-debug`) || el.hasAttribute(`data-${config.slug.long}-debug`) || el.hasAttribute(`data-${config.slug.short}-debug`);
@@ -474,7 +467,6 @@ let getOji = { global: {}, elements: {} };
                  * and BG Colors
                  */
                 let elementStyles = window.getComputedStyle(el);
-                // console.log(elementStyles);
                 let fontSize = parseInt(elementStyles.getPropertyValue('font-size'));
                 let fontSizePx = fontSize;
                 let fontSizeRem = fontSize / 16;
@@ -485,12 +477,10 @@ let getOji = { global: {}, elements: {} };
                 let rgbColor = parseColor(color);
                 let rgbBackgroundColor = parseColor(backgroundColor);
                 let colorContrastRatio = getContrastRatio(rgbColor, rgbBackgroundColor).toFixed(2);
-                // Check and set background color
                 if (backgroundColor === 'transparent' || backgroundColor === 'none') {
                     backgroundColor = 'white';
                 }
 
-                // Check and set text color
                 if (color === 'transparent' || color === 'none') {
                     color = 'white';
                 }
@@ -506,34 +496,26 @@ let getOji = { global: {}, elements: {} };
                  * viewport of an oji element
                  */
 
-                // Calculate horizontal overlap
                 let leftEdgeInsideViewport = Math.max(spacingLeftDocPx, 0);
                 let rightEdgeInsideViewport = Math.min(spacingLeftDocPx + widthPx, viewPortWidth);
                 let visibleWidth = Math.max(0, rightEdgeInsideViewport - leftEdgeInsideViewport);
-                // Calculate vertical overlap
                 let topEdgeInsideViewport = Math.max(topToViewport, 0);
                 let bottomEdgeInsideViewport = Math.min(topToViewport + heightPx, viewPortHeight);
                 let visibleHeight = Math.max(0, bottomEdgeInsideViewport - topEdgeInsideViewport);
-                // Calculate the visible area of the element
                 let visibleArea = visibleWidth * visibleHeight;
-                // Calculate the percentage of the element that's visible
                 let percentageVisible = (visibleArea / elementArea * 100).toFixed(2);
 
                 /**
                 * Calc the Area visible inside the document of an oji element
                 */
 
-                // Calculate horizontal overlap
                 let leftEdgeInsideDoc = Math.max(spacingLeftDocPx, 0);
                 let rightEdgeInsideDoc = Math.min(spacingLeftDocPx + widthPx, DocWidth);
                 let visibleWidthDoc = Math.max(0, rightEdgeInsideDoc - leftEdgeInsideDoc);
-                // Calculate vertical overlap
                 let topEdgeInsideDoc = Math.max(spacingTopDocPx, 0);
                 let bottomEdgeInsideDoc = Math.min(spacingTopDocPx + heightPx, DocHeight);
                 let visibleHeightDoc = Math.max(0, bottomEdgeInsideDoc - topEdgeInsideDoc);
-                // Calculate the visible area of the element
                 let visibleAreaDoc = visibleWidthDoc * visibleHeightDoc;
-                // Calculate the percentage of the element that's visible
                 let percentageVisibleDoc = (visibleAreaDoc / elementArea * 100).toFixed(2);
 
                 /**
@@ -672,6 +654,8 @@ let getOji = { global: {}, elements: {} };
             }
         }
 
+        getOji.calculate = calculateObjectInfo;
+
         return getOji;
     }
 
@@ -759,6 +743,7 @@ let getOji = { global: {}, elements: {} };
     const checkIfOjiIsPresent = document.querySelector(`[data-${ojiAtt}]`);
     const checkIfOjiAttributesIsPresent = document.querySelector(`[data-${ojiAtt}][data-${ojiAtt}-attributes]`);
     const checkIfOjiDebugIsPresent = document.querySelector(`[data-${ojiAtt}][data-${ojiAtt}-debug]`);
+    const checkIfOjiSummaryIsNotFalse = document.querySelector(`[data-${ojiAtt}-summary-active]`) !== 'false' ? true : false;
 
     /**
      * if `oji` is present in the DOM
@@ -768,7 +753,6 @@ let getOji = { global: {}, elements: {} };
 
     if (checkIfOjiIsPresent) {
         body.setAttribute(`data-${ojiAtt}-active`, 'true');
-        // console.log(`Element found in the DOM that has the [data-${ojiAtt}] attribute set.`);
     }
 
     /**
@@ -777,13 +761,18 @@ let getOji = { global: {}, elements: {} };
     */
     if (checkIfOjiIsPresent && checkIfOjiAttributesIsPresent) {
         body.setAttribute(`data-${ojiAtt}-attributes-active`, 'true');
-        // console.log(`Element found in the DOM that has the [data-${ojiAtt}-attributes] attribute set.`);
 
     } else {
         body.setAttribute(`data-${ojiAtt}-attributes-active`, 'false');
-        // console.log(`No Element found in the DOM that has the [data-${ojiAtt}-attributes] attribute set.`);
     }
 
+
+    if (checkIfOjiSummaryIsNotFalse) {
+        const summaryAttributes = document.querySelectorAll(`[data-${ojiAtt}-summary]`);
+        summaryAttributes.forEach((el) => {
+            el.removeAttribute(`data-${ojiAtt}-summary`);
+        });
+    }
 
     /**
     * If the `[data-oji-debug]` is on any element (at least one)
@@ -793,7 +782,6 @@ let getOji = { global: {}, elements: {} };
     */
     let bodyHasDebugAttPresent = body.getAttribute(`data-${ojiAtt}-debug-active`);
     body.setAttribute(`data-${ojiAtt}-debug-active`, `${bodyHasDebugAttPresent || 'true'}`);
-    // console.log(body);
     if (document.body.getAttribute(`data-${ojiAtt}-debug-active`) === 'false') {
         return;
     }
@@ -834,7 +822,6 @@ let getOji = { global: {}, elements: {} };
         </section>
         </div>`;
         document.body.appendChild(debugGlobalContainer);
-        // console.log(`Element found in the DOM that has the [data-${ojiAtt}-debug] attribute set.`);
     }
 
     /**
@@ -853,8 +840,9 @@ let getOji = { global: {}, elements: {} };
      * A style tag that contains the CSS 
      * for the data-oji-debug attribute.
      */
+
     style = document.createElement('style');
-    style.textContent = `
+    style.textContent = removeExtraSpaces(`
         .${ojiAtt}-debug-container, .${ojiAtt}-global-debug-container {
             --${ojiAtt}-max-width: min(320px, 100%);
             --${ojiAtt}-text: #000;
@@ -936,17 +924,24 @@ let getOji = { global: {}, elements: {} };
                 background-color: #000000b3;
                 color: #fff;
             }
-        }`;
+        }`);
     document.head.appendChild(style);
     style.setAttribute('id', 'oji-styles');
 
     /*
      * 
-     * Assign the debaounce Function 
+     * Assign the debb ounce Function 
      * to the calculateObjectInfo function
      * 
      * */
     var debouncedCalculateObjectInfo = debounce(calculateObjectInfo, parseInt(config.debounce));
+
+    /**
+         * If there is a [data-oji-summary] present (at least one)
+         * give the body tag an attribute
+         * `data-oji-summary-active="false"`
+         * and remove the data-oji-summary attribute from the element
+         */
 
     /*
      * 
@@ -960,6 +955,7 @@ let getOji = { global: {}, elements: {} };
         window.addEventListener(event, debouncedCalculateObjectInfo);
 
     }
+
     /**------------------------------------
      * Console Message
     ------------------------------------*/
@@ -1057,11 +1053,53 @@ let getOji = { global: {}, elements: {} };
             });
         });
     }
+
 })();
 
 /**-------------------------------------------------- 
  * PUBLIC API
  * --------------------------------------------------*/
+
+/**
+     * @name removeExtraSpaces
+     * @param {string} str
+     * @returns {string} str
+     * @description
+     * Remove extra spaces from a string
+     * @see {@link https://stackoverflow.com/a/4328722}
+     */
+
+function removeExtraSpaces(str) {
+    return str.replace(/\s{2,}/g, " ");
+}
+
+getOji.trimWhitespace = removeExtraSpaces;
+
+
+/**
+ * @name debounce
+ * @description A function that delays the execution of the input function until after a specified wait time has elapsed since the last time it was invoked.
+ * @param {Function} func - The function to debounce.
+ * @param {number} wait - The number of milliseconds to delay.
+ * @returns {Function}
+ * 
+ */
+
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction() {
+        let context = this;
+        let args = arguments;
+        let later = function () {
+            timeout = null;
+            func.apply(context, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+};
+
+getOji.debounce = debounce;
 
 /**
  * 
@@ -1166,44 +1204,30 @@ getOji.values = getOjiValues;
  * like area, font size and color contrast.
  */
 
-function getOjiComparison(element1 = 'body', element2 = 'section') {
-    let el1 = document.querySelector(element1);
-    let el2 = document.querySelector(element2);
+function getOjiComparison(element1, element2) {
+    let el1 = getOjiValues(element1);
+    let el2 = getOjiValues(element2);
+    getOji.calculate(element1);
+    getOji.calculate(element2);
+    // compare the 2 elements and return the comparison
     let comparison = {
-        area: {
-            bigger: parseFloat(el1.getAttribute('data-oji-object-relative-area-of-document')) > parseFloat(el2.getAttribute('data-oji-object-relative-area-of-document')) ? true : false,
-            smaller: parseFloat(el1.getAttribute('data-oji-object-relative-area-of-document')) < parseFloat(el2.getAttribute('data-oji-object-relative-area-of-document')) ? true : false,
-            same: parseFloat(el1.getAttribute('data-oji-object-relative-area-of-document')) === parseFloat(el2.getAttribute('data-oji-object-relative-area-of-document')) ? true : false,
-            // Check if the 2 elements overlap with each other or not and return a bool
-            hasOverlap: areasOverlap(element1, element2),
-        },
-        fontSize: {
-            bigger: el1.getAttribute('data-oji-object-font-size-px') > el2.getAttribute('data-oji-object-font-size-px') ? true : false,
-            smaller: el1.getAttribute('data-oji-object-font-size-px') < el2.getAttribute('data-oji-object-font-size-px') ? true : false,
-            same: el1.getAttribute('data-oji-object-font-size-px') === el2.getAttribute('data-oji-object-font-size-px') ? true : false,
-        },
-        color: {
-            higherContrast: el1.getAttribute('data-oji-object-color-contrast') > el2.getAttribute('data-oji-object-color-contrast') ? true : false,
-            lowerContrast: el1.getAttribute('data-oji-object-color-contrast') < el2.getAttribute('data-oji-object-color-contrast') ? true : false,
-            same: el1.getAttribute('data-oji-object-color-contrast') === el2.getAttribute('data-oji-object-color-contrast') ? true : false,
-        }
-    }
+        overlap: areasOverlap(element1, element2),
+        area: el1.object.relativeAreaInDocumentVisible === el2.object.relativeAreaInDocumentVisible ? 'Same Size' : 'Different Size',
+        fontSize: el1.object.fontSizePx === el2.object.fontSizePx,
+        colorContrast: el1.object.colorContrast === el2.object.colorContrast,
+    };
 
     return comparison;
 }
 
 /** */
 function areasOverlap(element1, element2) {
-    // write a function that compares 2 elements in the DOM and finds out if they currenty overlap
 
-    // get the position of the first element
     let el1 = document.querySelector(element1);
     let el2 = document.querySelector(element2);
 
     let el1Rect = el1.getBoundingClientRect();
     let el2Rect = el2.getBoundingClientRect();
-
-    // check if the 2 elements overlap with each other or not and return a bool
 
     return !(
         el1Rect.right < el2Rect.left ||
@@ -1214,15 +1238,96 @@ function areasOverlap(element1, element2) {
 
 }
 
-/**
- * @name getOji.compare
- * @description
- * Expose the `getOji` as `oji` function to the global scope.
- * @param {HTMLElement} element1
- * @param {HTMLElement} element2
- * @returns {object}
- */
 getOji.compare = getOjiComparison;
+
+
+/**
+ * @name ojiAdd
+ * @param {HTMLElement} element
+ * @param {boolean} hasAttributes
+ * @param {boolean} hasDebug
+ * @param {object} void
+ * @description
+ * a function that adds a html element
+ * or a array of them to the oji calculation 
+ * and adds attributes, debug and summary 
+ * to them if the giuven param is true
+ */
+
+function ojiAdd(element, hasAttributes = true, hasDebug = true) {
+    let elements = document.querySelectorAll(element);
+    elements.forEach(el => {
+        el.setAttribute(`data-oji`, '');
+        getOji.calculate(el);
+        if (hasAttributes) {
+            el.setAttribute(`data-oji-attributes`, '');
+        }
+        if (hasDebug) {
+            el.setAttribute(`data-oji-debug`, '');
+        }
+    }
+    );
+}
+
+getOji.add = ojiAdd;
+
+/**
+ * @name ojiRemove
+ * @param {HTMLElement} element
+ * @description
+ * a function that removes a html element
+ * from oji calculation
+ */
+
+function ojiRemove(elementSelector) {
+    let elements = document.querySelectorAll(elementSelector);
+    elements.forEach(el => {
+        // Remove attributes starting with 'data-oji'
+        Array.from(el.attributes).forEach(attr => {
+            if (attr.name.startsWith('data-oji')) {
+                el.removeAttribute(attr.name);
+            }
+        });
+        let debugBox = el.querySelector('.oji-debug-container');
+        if (debugBox) {
+            el.removeChild(debugBox);
+        }
+    });
+}
+
+// Assuming getOji is defined and used elsewhere in your code
+getOji.remove = ojiRemove;
+
+/**
+ * @name ojiFinished
+ * @param {function} callback
+ * @param {number} debounce
+ * @description
+ * function to trigger anytime or 
+ * once if the oji claculateObjectInfo 
+ * is finished
+
+ */
+
+function ojiFinished(callback, timeout = 100) {
+    if (typeof callback !== 'function') return;
+
+    const debouncedCallback = debounce(callback, timeout);
+    const observer = new MutationObserver(debouncedCallback);
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true });
+
+    let events = ['load', 'resize', 'scroll', 'click', 'focus', 'blur', 'mouseup', 'touch'];
+    events.forEach(event => {
+        window.addEventListener(event, debouncedCallback);
+    });
+
+    debouncedCallback();
+}
+
+getOji.finished = ojiFinished;
+
+// getOji.enable = enableOji;
+
 
 /**
  * @name window.oji
@@ -1230,3 +1335,9 @@ getOji.compare = getOjiComparison;
  * Expose the `getOji` as `oji` function to the global scope.
  */
 window.oji = getOji;
+
+window.oji.finished(
+    () => {
+        console.log('oji.js is finished calculating the object info for the elements in the DOM.');
+    }
+)

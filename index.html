@@ -6,10 +6,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>oji.js v2.0.</title>
+    <link rel="stylesheet" href="./demo/css/style.css">
 </head>
 
 <body data-oji-active="true" data-oji-debounce="1">
-    <section data-oji data-oji-attributes="true" data-oji-debug style="
+    
+    <section data-oji data-oji-attributes="true" data-oji-summary-active="false" data-oji-debug style="
     width: 100%;
     height: 100vh;
     background:yellow;
@@ -75,9 +77,9 @@
          * if there is 99.99 or less turn the the viewporta rea percentage the same as the opacity
         */
 
-        document.addEventListener("scroll", (e) => {
-            const elements = document.querySelectorAll('[data-animate-on-scrolljack]');
-            const ojiAreaAttribute = 'data-oji-object-relative-area-in-viewport-visible';
+        function animateScrolljack(el, trigger) {
+            const elements = document.querySelectorAll(el);
+            const ojiAreaAttribute = trigger;
             elements.forEach(el => {
                 const visibility = parseFloat(el.getAttribute(ojiAreaAttribute));
                 el.style.opacity = (visibility / 100).toFixed(2);
@@ -89,7 +91,23 @@
                     el.style.backgroundColor = 'transparent';
                 }
             });
+        }
+
+        document.addEventListener("DOMContentLoaded", (e) => {
+            animateScrolljack(
+                '[data-animate-on-scrolljack]',
+                'data-oji-object-relative-area-in-viewport-visible'
+            );
+
+            document.addEventListener("scroll", (e) => {
+                animateScrolljack(
+                    '[data-animate-on-scrolljack]',
+                    'data-oji-object-relative-area-in-viewport-visible'
+                );
+            });
         });
+
+
 
     </script>
 
