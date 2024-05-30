@@ -8,21 +8,108 @@
     <title>oji.js v2.0.</title>
 </head>
 
-<body data-oji-active="true" data-oji-debounce="100">
+<body data-oji-active="true" data-oji-debounce="1">
     <section data-oji data-oji-attributes="true" data-oji-debug style="
     width: 100%;
     height: 100vh;
     background:yellow;
     "></section>
-    <section data-oji data-oji-attributes="true" data-oji-debug style="
+    <section class="myTestClass yoyoy " data-animate-on-scroll data-oji data-oji-attributes="true" data-oji-debug style="
     width: 100%;
     height: 100vh;
-    background:green;
+    /* background:green; */
     "></section>
+    <section class="myTestClass yoyoy " data-animate-on-scrolljack data-oji data-oji-attributes="true" data-oji-debug
+        style="
+     width: 100%;
+     height: 66vh;
+     margin-block:66vh;
+     /* background:green; */
+     "></section>
     <script src="src/oji.js"></script>
     <script>
-        console.log(oji.elements);
+        console.log(oji);
+
+        /*
+        There is an el with the data-animate-on-scroll attribute
+        it has also a data-oji-object-relative-area-in-viewport-visible attribute
+        if this attribute value (float with 2 decimal numbers) reaches 50.00 or more
+        turn the background-color to "sky"
+        */
+
+        document.addEventListener("scroll", (e) => {
+            const elements = document.querySelectorAll('[data-animate-on-scroll]');
+            const ojiAreaAttribute = 'data-oji-object-relative-area-in-viewport-visible';
+            function removePrevClasses(el) {
+                el.classList.remove('sky');
+                el.classList.remove('blue');
+                el.classList.remove('yellow');
+            }
+            elements.forEach(el => {
+                const initialClassList = el.classList;
+                // console.log(initialClassList);
+                const visibility = parseFloat(el.getAttribute(ojiAreaAttribute));
+                if (visibility >= 50.00) {
+                    removePrevClasses(el);
+                    el.classList = `sky ${initialClassList}`;
+                }
+                if (visibility <= 50.00) {
+                    removePrevClasses(el);
+                    el.classList = `blue ${initialClassList}`;
+                }
+                if (visibility >= 75.00) {
+                    removePrevClasses(el);
+                    el.classList = `yellow ${initialClassList}`;
+                }
+            });
+        });
+
+        // console.log('Values: ' + oji.values('[data-animate-on-scroll]'));
+        // console.log('Viewport: ' + oji.viewportPosition('[data-animate-on-scroll]'));
+        // console.log('Document: ' + oji.documentPosition('[data-animate-on-scroll]'));
+
+        /**
+         * If an element has the data-animate-on-scrolljack attribute is present and also a data-oji-object-relative-area-in-viewport-visible attribute
+         * use relative area in viewport visible to change the background color of the element
+         * if it's 100.00 or more turn the opacity to 1
+         * if there is 99.99 or less turn the the viewporta rea percentage the same as the opacity
+        */
+
+        document.addEventListener("scroll", (e) => {
+            const elements = document.querySelectorAll('[data-animate-on-scrolljack]');
+            const ojiAreaAttribute = 'data-oji-object-relative-area-in-viewport-visible';
+            elements.forEach(el => {
+                const visibility = parseFloat(el.getAttribute(ojiAreaAttribute));
+                el.style.opacity = (visibility / 100).toFixed(2);
+                el.style.transform = `scale(calc(${(visibility / 100).toFixed(2)}))`;
+                if (visibility === 100.00) {
+                    el.style.backgroundColor = 'yellow';
+                }
+                if (visibility !== 100.00) {
+                    el.style.backgroundColor = 'transparent';
+                }
+            });
+        });
+
     </script>
+
+    <style>
+        :is(.blue, .sky, .yellow) {
+            transition: background-color 0.5s ease;
+        }
+
+        .blue {
+            background: blue;
+        }
+
+        .sky {
+            background: skyblue;
+        }
+
+        .yellow {
+            background: yellow;
+        }
+    </style>
 </body>
 
 </html>

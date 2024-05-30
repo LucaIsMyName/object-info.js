@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+
+</head>
+
+<body data-oji-active data-oji-debounce="250">
+  <section class="hero" data-oji-debug data-oji data-oji-attributes>
+    <div class="inner-wrapper">
+      <h1>My Headline</h1>
+      <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Neque id perferendis vitae, at autem beatae pariatur,
+        iure iste, illo in magnam eius. Et maiores, nemo reprehenderit cupiditate saepe eum sint!</p>
+    </div>
+  </section>
+  <section class="usp">
+    <div class="column-1" data-oji-debug data-oji data-oji-attributes>
+      <h2>The ultimate Stack</h2>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusamus ex maiores soluta magni ullam autem dolore
+        rem neque repudiandae officia laboriosam aperiam quos atque aliquam numquam sunt, deserunt nemo consectetur?
+      </p>
+    </div>
+    <div class="column-2" data-oji-debug data-oji data-oji-attributes>
+      <figure>
+        <img src="https://via.placeholder.com/300" alt="placeholder">
+      </figure>
+    </div>
+  </section>
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="../src/oji.js" defer></script>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", () => {
+      console.log('Area Size: ' + oji.compare('.column-1', '.column-2').area.smaller);
+      console.log('Has Overlap: ' + oji.compare('.column-1', '.column-2').area.hasOverlap);
+    });
+  </script>
+</body>
+
+</html>
