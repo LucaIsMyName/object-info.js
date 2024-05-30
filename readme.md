@@ -83,35 +83,71 @@
          colorContrast: `${float}`,
       },
       viewport: {
+         // the absolute width of the viewport
          absoluteWidth: `${integer}px`,
+         // the absolute height of the viewport
          absoluteHeight: `${integer}px`,
+         // the aspect-ratio of the viewport
          aspectRatio: `1:${float}`,
+         // the relative object width in the viewport
          relativeObjectWidth: `${integer}%`,
+         // the relative object height in the viewport
          relativeObjectHeight: `${integer}%`,
+         // the relative object distance to the right of the viewport
          relativeSpacingToObjectRight: `${integer}%`,
+         // the relative object distance to the bottom of the viewport
          relativeSpacingToObjectBottom: `${integer}%`,
+         // the relative object distance to the left of the viewport
          relativeSpacingToObjectLeft: `${integer}%`,
+         // the relative object distance to the top of the viewport
          absoluteSpacingToObjectTop: `${integer}px`,
+         // the absolute object distance to the right of the viewport
          absoluteSpacingToObjectRight: `${integer}px`,
+         // the relative object distance to the bottom of the viewport
          absoluteSpacingToObjectBottom: `${integer}px`,
+         // the relative object distance to the left of the viewport
          absoluteSpacingToObjectLeft: `${integer}px`,
+         // the relative object distance to the top of the viewport
+         absoluteSpacingToObjectTop: `${integer}px`
       },
       document: {
+         // the absolute width of the document
          absoluteWidth: `${integer}px`,
+         // the absolute height of the document
          absoluteHeight: `${integer}px`,
+         // the aspect-ratio of the document
          aspectRatio: `${integer}px`,
+         // the relative object width in the document
          relativeObjectWidth: `${integer}%`,
+         // the relative object height in the document
          relativeObjectHeight: `${integer}%`,
+         // the relative object spacing to the top of the document
          relativeSpacingToObjectTop: `${integer}%`,
+         // the relative object spacing to the right of the document
          relativeSpacingToObjectRight: `${integer}%`,
+         // the relative object spacing to the bottom of the document
          relativeSpacingToObjectBottom: `${integer}%`,
+         // the relative object spacing to the left of the document
          relativeSpacingToObjectLeft: `${integer}%`,
+         // the absolute object spacing to the top of the document
          absoluteSpacingToObjectTop: `${integer}px`,
+         // the absolute object spacing to the right of the document
          absoluteSpacingToObjectRight: `${integer}px`,
+         // the absolute object spacing to the bottom of the document
          absoluteSpacingToObjectBottom: `${integer}px`,
+         // the absolute object spacing to the left of the document
          absoluteSpacingToObjectLeft: `${integer}px`,
       }
    }
+```
+
+## JavaScript API
+
+```js
+oji.viewportPosition('.myElement').absoluteSpacingToObjectTop;
+oji.documentPostion('.myElement').relativeObjectWidth;
+oji.values('.myElement').absoluteWidth;
+oji.compare('.myElement', '.someOtherElement').area.hasOverlap;
 ```
 
 ## DOM Manipulation Examples
@@ -150,7 +186,7 @@ document.addEventListener("scroll", (e) => {
 ```html
 <script>
 /**
-* If an element has the data-animate-on-scrolljack attribute is present and also a data-oji-object-relative-area-in-viewport-visible attribute
+* If an element has the `data-animate-on-scrolljack` attribute is present and also a `data-oji-object-relative-area-in-viewport-visible` attribute
 * use relative area in viewport visible to change the background color of the element
 * if it's 100.00 or more turn the opacity to 1
 * if there is 99.99 or less turn the the viewporta rea percentage the same as the opacity
@@ -173,14 +209,6 @@ document.addEventListener("scroll", (e) => {
    });
 });
 </script>
-```
-
-## JavaScript API
-
-```js
-oji.viewportPosition('.myElement');
-oji.documentPostion('.myElement');
-oji.values('.myElement');
 ```
 
 ## Notes for Users
