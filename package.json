@@ -10,7 +10,10 @@
     "dom",
     "positioning",
     "styling",
-    "animations"
+    "animations",
+    "debugging",
+    "development",
+    "design"
   ],
   "author": "LucaIsMyName",
   "license": "ISC"

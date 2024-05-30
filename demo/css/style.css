@@ -20,7 +20,7 @@
   place-content: center;
   & .inner-wrapper {
     text-align: center;
-    margin:0 auto;
+    margin: 0 auto;
     padding-inline: 1rem;
   }
   & h1 {
@@ -32,10 +32,12 @@
   display: flex;
   padding: 1rem;
   gap: 1rem;
-  & .column-1, .column-2 {
+  & .column-1,
+  .column-2 {
     flex: 1;
   }
-}
-.column-2 {
-  transform: translateY(-40px);
+
+  & .column-2 {
+    transform: translateY(-40px);
+  }
 }

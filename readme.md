@@ -231,10 +231,8 @@ document.addEventListener("scroll", (e) => {
 * If an element has the `data-animate-on-scrolljack` attribute is present and also a `data-oji-object-relative-area-in-viewport-visible` attribute
 * use relative area in viewport visible to change the background color of the element
 * if it's 100.00 or more turn the opacity to 1
-* if there is 99.99 or less turn the the viewporta rea percentage the same as the opacity
+* if there is 99.99 or less turn the the viewport area percentage the same as the opacity
 */
-
-
 
 let scrolljackElements = "[data-animate-on-scrolljack]";
 let scrolljackTrigger = 'data-oji-object-relative-area-in-viewport-visible';
